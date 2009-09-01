@@ -1,0 +1,32 @@
+export("bpmapToProbeAnno", "profileplot", "correlate", "correlationPlot",       
+		"expressionByFeature", "expressionSet2TilingSet",  
+		"fill", "fillNA", "filterGenes",
+		"getFeature", "getIntensities", 		
+		"getMeans", "getProfiles",           
+		"getProfilesByBase", "getRatio",             
+		"intersection", "list2matrix",             
+		"makeProbeAnno", "mapFeatures",             
+		"normalize.MAT", "normalize.Probes",        
+		"plotBoxes",  "plotDensity",           
+		"plotGCbias", "plotImage",              
+		"plotMA",  "plotPosBias",            
+		"plotProfiles", "rankPercentile.normalize",
+		"read.gffAnno", "readCelFile",             
+		"RGlist2ExpresionSet", "sameLength",             
+		"singleclusterplot", "substract",               
+		"whichIn", "windowxy",                
+		"writeGFF",  "writePosFile",  
+		"densityscatter", "kde2dplot",
+		"plotScatter", "plotRatioScatter",
+		"makeSplines")
+
+
+
+import(Ringo)
+import("pspline")
+import("MASS")
+import("rMAT")
+importFrom("affy", "xy2indices", "normalize.loess")
+importFrom("affxparser", "readBpmap", "readCel", "readCelHeader", "readCelIntensities")
+
+

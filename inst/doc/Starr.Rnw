@@ -1,0 +1,532 @@
+%\VignetteIndexEntry{Simple tiling array analysis}
+%\VignetteDepends{Starr}
+%\VignetteKeywords{Affymetrix tiling array ChIP-chip}
+%\VignettePackage{Starr} % name of package
+\documentclass[a4paper]{article}
+
+
+\title{Starr: Simple Tiling ARRay analysis \\ for Affymetrix ChIP-chip data}
+\author{Benedikt Zacher}
+
+\SweaveOpts{echo=FALSE}
+\usepackage{a4wide}
+
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rclass}[1]{{\textit{#1}}}
+\newcommand{\Rmethod}[1]{{\textit{#1}}}
+\newcommand{\Rfunarg}[1]{{\texttt{#1}}}
+
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+\Rpackage{Starr} is an extension of the \Rpackage{Ringo} \cite{Ringo} package for the analysis of ChIP-chip projects. 
+Whereas the latter is specialized to the processing of Nimblegen and Agilent arrays, the former provides all corresponding features for Affymetrix arrays. 
+Data can be read in from Affymetrix CEL-files, or from text files in gff format. 
+Standard quality assessment and data normalization tools are available. \Rpackage{Starr} uses the Bioconductor \Rclass{ExpressionSet} class for data storage. 
+The \Rclass{probeAnno} class from \Rpackage{Ringo} serves as a mapping of the ChIP signals onto the genomic position. Consequently, 
+all functions from \Rpackage{Ringo} that operate on either \Rclass{ExpressinoSet} or \Rclass{probeAnno} can be used without modification. 
+These include smoothing operations, peak-finding, and quality control plots. 
+\Rpackage{Starr} adds new options for high-level analysis of ChIP-chip data.
+We demonstrate \Rpackage{Starr's} facilities at the example of an experiment that compares DNA binding under two different conditions.
+Three chips have been produced, two contain the actual immunoprecipitated DNA, and the other one is a control experiment.
+<<Loading library, echo=TRUE, results=hide>>=
+library(Starr)
+@
+
+\section{Reading the data}
+To read Affymetrix tiling array data, two different file types are required. The bpmap file contains the mapping of the physical
+position on the array to the genomic position of the probe sequences. The CEL file delivers the measured intensities from the scanner.
+The data included in this package contains the first 80000 bp from chromosome 1 of a real ChIP-chip experiment in yeast. 
+Artificial bpmap and CEL files were constructed for demonstration purposes. Two ChIP-chip experiments were performed with
+TAP-tagged RNA Polymerase II subunit Rpb3. For the control experiment, the ChIP-chip protocol has exactly been reproduced with wild 
+type cells (i.e. with no TAP-tag to Rpb3). The \Rmethod{readBpmap()} function from the \Rpackage{affxparser} package reads the bpmap file.\\
+
+<<Reading bpmap file, echo=TRUE>>=
+dataPath <- system.file("extdata", package="Starr")
+bpmapChr1 <- readBpmap(file.path(dataPath, "Scerevisiae_tlg_chr1.bpmap"))
+@
+
+The function \Rmethod{readCelFile()} reads one or more CEL files and stores them in an \Rclass{ExpressionSet}. Additionally to the path to the CEL files,
+experiment names and the type of experiment must be specified. An optional experimentData object can be included. This is a ''MIAME'' object,
+which includes information about the experiment (e.g. the investigator or lab where the experiment was done, an overall title, etc.).\\
+
+<<Data read-in, echo=TRUE, results=hide>>=
+cels <- c(file.path(dataPath,"Rpb3_IP_chr1.cel"), file.path(dataPath,"wt_IP_chr1.cel"), 
+	file.path(dataPath,"Rpb3_IP2_chr1.cel"))
+names <- c("rpb3_1", "wt_1","rpb3_2")
+type <- c("IP", "CONTROL", "IP")
+rpb3Chr1 <- readCelFile(bpmapChr1, cels, names, type, featureData=T, log.it=T)
+@
+
+
+Now we give a very short introduction to the \Rclass{ExpressionSet} class. For a more detailed view, please refer to ''An Introduction to Bioconductor's ExpressionSet Class'' \cite{expressionSet}. A summary of the \Rclass{ExpressionSet} can be shown with:
+<<ExpressionSet, echo=TRUE,print=TRUE>>=
+rpb3Chr1
+@
+
+The \Rclass{ExpressionSet} in this case consists of three different objects. Optinally, a \Rclass{MIAME} object can be added as just described. In the following, a short description of the components of \Robject{rpb3Chr1} is given:
+
+\begin{enumerate}
+
+\item The \Rclass{assayData} is a matrix with the measured signals.
+<<assayData, echo=TRUE,print=TRUE>>=
+head(exprs(rpb3Chr1))
+@
+
+\item Phenotypic data summarizes information about the samples 
+(e.g., information about type of experiment, such as tagged IP, raw IP, input DNA, ...). The rownames of the phenotypic data are equal to the colnames of the assayData.
+The information about the type of experiment is needed for the normalization.
+<<phenoData, echo=TRUE,print=TRUE>>=
+pData(rpb3Chr1)
+@
+
+
+\item The \Rclass{featureData} in this case contains information from the bpmap file. The featureNames correspond to the rownames of the \Rclass{assayData} of the \Rclass{ExpressionSet}.
+With the \Rclass{featureData}, each ChIP-signal from the expression matrix can be mapped to the chromosome and
+its position on it, as well as its genomic sequence. This information can be used for sequence specific
+normalization methods.
+<<featureData, echo=TRUE,print=TRUE>>=
+featureData(rpb3Chr1)
+head(featureData(rpb3Chr1)$chr)
+head(featureData(rpb3Chr1)$seq)
+head(featureData(rpb3Chr1)$pos)
+@
+\end{enumerate}
+
+
+\section{Diagnostic plots}
+Since the probes are placed on the array in a randomized way, localized signal distortions are most likely due to technical artefacts.
+A reconstruction of the array image helps to identify these defects. The \Rmethod{plotImage()} function constructs a reconstruction of the artificial array,
+used in this example (see figure \ref{figure1}).\\
+
+<<Reconstruction of the array image, eval=FALSE, echo=TRUE>>=
+plotImage(file.path(dataPath,"Rpb3_IP_chr1.cel"))
+@ 
+
+<<Reconstruction of the array image,eval=TRUE,results=hide,echo=FALSE>>=
+jpeg(file="image.jpeg", quality=100)
+plotImage(file.path(dataPath,"Rpb3_IP_chr1.cel"))
+dev.off()
+@
+
+\begin{figure}[htp]
+  \centering
+\includegraphics[width=7.5cm]{image.jpeg}
+\caption{Spatial distribution of raw reporter intensities of the artificial array}
+\label{figure1}
+\end{figure}
+
+Besides that, \Rpackage{Starr} provides different diagnostic plots for the visual inspection of the data. These plots should help to find an appropriate normalization method.
+The densityplots and the boxplots show the distribution of the measured intensities (see figure \ref{figure2}).\\
+
+
+<<boxplots and density plots, eval=FALSE, echo=TRUE>>=
+par(mfcol=c(1,2))
+plotDensity(rpb3Chr1, oneDevice=T, main="")
+plotBoxes(rpb3Chr1)
+@ 
+
+<<boxplots and density plots,eval=TRUE,results=hide,echo=FALSE>>=
+png("boxdens.png", height=400, width=720)
+par(mfcol=c(1,2))
+plotDensity(rpb3Chr1, oneDevice=T, main="")
+plotBoxes(rpb3Chr1)
+dev.off()
+@
+
+\begin{figure}[htp]
+  \centering
+\includegraphics[width=15cm]{boxdens.png}
+\caption{Density- and boxplots of the logged intensities}
+\label{figure2}
+\end{figure}
+
+To compare the different experiments, the \Rmethod{plotScatter()} function can be applied. This produces a matrix of pairwise scatterplots in the upper panel and pearson correlation in the lower panel.
+The density of the data points can be visualized with a color gradient (see figure \ref{figure3}).\\
+
+<<Scatterplot matrix, eval=FALSE, echo=TRUE>>=
+plotScatter(rpb3Chr1, density=T)
+@ 
+
+<<Scatterplot matrix,eval=TRUE,results=hide,echo=FALSE>>=
+png("densscatter.png", height=400, width=360)
+plotScatter(rpb3Chr1, density=T)
+dev.off()
+@
+
+\begin{figure}[htp]
+  \centering
+\includegraphics[width=7.5cm]{densscatter.png}
+\caption{A scatterplot matrix, showing the correlation in the lower panel. In the scatterplots, the density of the points is illustrated with a color gradient.}
+\label{figure3}
+\end{figure}
+
+
+MA-plots are a classic and important quality control plot to spot and correct saturation-dependent effects in the log enrichment. For each probe, the log enrichment M is plotted versus the average log intensities of signal and reference (A-value).
+Ideally, the measured enrichment should be independent of the mean intensity A of signal and reference.  But if e.g. the signal and the reference measurements have different saturation characteristics, then e.g. M will show a dependence on A.
+\Rmethod{plotMA()} constructs MA plots of all pairs of Immunoprecipitation and control experiments (see figure \ref{figure4}). \\
+
+<<MA plot of raw data, eval=FALSE, echo=TRUE>>=
+ips <- rpb3Chr1$type == "IP"
+controls <- rpb3Chr1$type == "CONTROL"
+plotMA(rpb3Chr1, ip=ips, control=controls)
+@ 
+
+<<MA plot of raw data,eval=TRUE,results=hide,echo=FALSE>>=
+png("maRaw.png", height=400, width=720)
+ips <- rpb3Chr1$type == "IP"
+controls <- rpb3Chr1$type == "CONTROL"
+plotMA(rpb3Chr1, ip=ips, control=controls)
+dev.off()
+@
+
+\begin{figure}[htp]
+  \centering
+\includegraphics[width=15cm]{maRaw.png}
+\caption{Pairwise MA-plots of all pairs of Immunoprecipitation and control experiments. Both plots show a dependency between A and M value.}
+\label{figure4}
+\end{figure}
+
+
+The last diagnostic plot shown here is about the sequence depedent bias of the probe intensities (see figure \ref{figure5}). The raw logged intensity depends on the GC-content of
+the probe sequence. But there is also a remarkable dependency on base position within the sequence. \\
+
+
+<<Sequence-specific hybridization bias, eval=FALSE, echo=TRUE>>=
+par(mfcol=c(1,2))
+plotGCbias(exprs(rpb3Chr1)[,1], featureData(rpb3Chr1)$seq, main="")
+plotPosBias(exprs(rpb3Chr1)[,1], featureData(rpb3Chr1)$seq)
+@ 
+
+<<Sequence-specific hybridization bias,eval=TRUE,results=hide,echo=FALSE>>=
+png("posGC1.png", height=400, width=720)
+par(mfcol=c(1,2))
+plotGCbias(exprs(rpb3Chr1)[,1], featureData(rpb3Chr1)$seq, main="")
+plotPosBias(exprs(rpb3Chr1)[,1], featureData(rpb3Chr1)$seq)
+dev.off()
+@
+
+\begin{figure}[htp]
+  \centering 
+\includegraphics[width=15cm]{posGC1.png}
+\caption{Sequence-specific hybridization bias (raw data). The raw logged intensity depends on the GC-content of
+the probe sequence. But there is also a remarkable dependency on base position within the sequence.}
+\label{figure5}
+\end{figure}
+
+
+
+\section{Normalization of the data}
+After quality assessment, we perform normalization of the raw data. Here we use the rank percentile normalization, which was proposed by Buck and Lieb \cite{rankpercentile}.
+<<echo=TRUE, results=hide>>=
+rpb3_rankpercentile <- normalize.Probes(rpb3Chr1, method="rankpercentile")
+@
+
+Besides this normalization method, there are e.g. loess, scale, quantile, vsn, MAT and some others available.
+After normalization, we perform again diagnositc plots to assert that the normalization was appropriate for the correction of the systematic measurement errors.
+The MA-plot of the normalized data does not show any dependence of the M and A values (see figure \ref{figure6}).\\
+
+
+<<MA-plot of the normalized data, eval=FALSE, echo=TRUE>>=
+plotMA(rpb3_rankpercentile, ip=ips, control=controls)
+@ 
+
+<<MA-plot of the normalized data,eval=TRUE,results=hide,echo=FALSE>>=
+png("maNorm.png", height=400, width=720)
+plotMA(rpb3_rankpercentile, ip=ips, control=controls)
+dev.off()
+@
+
+\begin{figure}[htp]
+  \centering
+\includegraphics[width=15cm]{maNorm.png}
+\caption{MA-plot of normalized data. There is no dependency between A- and M-value observed any more.}
+\label{figure6}
+\end{figure}
+
+
+Now we calculate the ratio of the probe intensities. Median values over replicates are taken.
+<<Calculating ratio, echo=TRUE, results=hide>>=
+description <- c("Rpb3vsWT")
+rpb3_rankpercentile_ratio <- getRatio(rpb3_rankpercentile, ips, controls, description, fkt=median, featureData=F)
+@
+
+
+It is very important that the control or reference experiment is able to correct the sequence-dependent bias on probe intensity, which is shown in figure \ref{figure5}.
+In this case the normalization and reference experiment was adequate to correct all systematic biases in the data (see figure \ref{figure7}).\\
+
+<<Sequence-specific hybridization bias (normalized data), eval=FALSE, echo=TRUE>>=
+par(mfcol=c(1,2))
+plotGCbias(exprs(rpb3_rankpercentile_ratio)[,1], featureData(rpb3_rankpercentile)$seq, main="")
+plotPosBias(exprs(rpb3_rankpercentile_ratio)[,1], featureData(rpb3_rankpercentile)$seq, ylim=c(-0.5,0.5))
+@ 
+
+<<Sequence-specific hybridization bias (normalized data),eval=TRUE,results=hide,echo=FALSE>>=
+png("posGC2.png", height=400, width=720)
+par(mfcol=c(1,2))
+plotGCbias(exprs(rpb3_rankpercentile_ratio)[,1], featureData(rpb3_rankpercentile)$seq, main="")
+plotPosBias(exprs(rpb3_rankpercentile_ratio)[,1], featureData(rpb3_rankpercentile)$seq, ylim=c(-0.5,0.5))
+dev.off()
+@
+
+\begin{figure}[htp]
+  \centering
+\includegraphics[width=15cm]{posGC2.png}
+\caption{Dependency of probe intensity on sequences (normalized ratio). The systematic bias could be corrected.}
+\label{figure7}
+\end{figure}
+
+
+\section{Data analysis}
+Besides the typical ChIP-chip analysis of the data, like visualization or peak finding - which are made available by \Rpackage{Ringo} - \Rpackage{Starr} provides
+additional useful functions to analyze ChIP-signals along specific genomic regions. 
+For this purpose, we need a mapping of the probe intensities in our \Rclass{ExpressionSet} to the genomic positions. To achieve that,
+we construct a \Rclass{probeAnno} object (as provided by \Rpackage{Ringo}). The object consists of
+four vectors of equal length and ordering for each chromosome. The vectors specify probe start and end, as well as the
+index of the probe intensity in the \Rclass{ExpressionSet}. The unique vector encodes how many matches the corresponding probe has on the given array. 
+An entry of '0' indicates that the probe matching at this position has only this one match. See \Rpackage{Ringo} for a detailed description
+of the \Rclass{probeAnno} class. \\
+If the array was designed on an outdated assembly of the genome, a re-mapping of reporters to the genome can be necessary. Further on, the unique vector does possibly not
+identify all probes, that match the genome uniquely at the sepcified position. A re-mapping can be used to identify all uniquely matching reporters.
+
+
+<<echo=TRUE, results=hide>>=
+probeAnnoChr1 <- bpmapToProbeAnno(bpmapChr1)
+@
+
+\subsection{Analyze the correlation of ChIP signals to other data}
+In the following section we want to demonstrate, how the binding profiles of the protein of interest can be analyzed over annotated genomic features.
+First we read in a gff file, which contains annotations for transcription start (TSS) and termination sites (TTS) of some genes on chromosome 1 \cite{steinmetz:2006}. 
+The \Rmethod{filterGenes()} function filters the annotated features with respect to length, overlaps or distance to other features. In this case
+the genes are supposed to have a minimal length of 1000 base pairs. \\
+<<echo=TRUE, results=hide>>=
+transcriptAnno <- read.gffAnno(file.path(dataPath, "transcriptAnno.gff"), feature="transcript")
+filteredIDs <- filterGenes(transcriptAnno, distance_us = 0, distance_ds = 0, minLength = 1000)
+@
+
+
+The \Rmethod{correlationPlot()} can then be used to visualize e.g. the correlation between the mean binding intensity of specific
+ regions around these transcripts and gene expression. First we need to define the regions around the annotated features, 
+that we want to analyze. This is realised with a data frame.
+
+<<means,echo=TRUE, print=FALSE, results=hide>>=
+pos <- c("start", "start", "start", "region", "region","region","region", "stop","stop","stop")
+upstream <- c(500, 0, 250, 0, 0, 500, 500, 500, 0, 250)
+downstream <- c(0, 500, 250, 0, 500, 0, 500, 0, 500, 250)
+info <- data.frame(pos=pos, upstream=upstream, downstream=downstream, stringsAsFactors=F)
+@
+
+Every row of this data frame represents one region, flanking the annotated features. The first row e.g. indicates, that we want to calculate the
+mean ChIP signal 500 bp upstream and 0 bp downstream around the start of the feature. The term ``region'' means in this context the area between
+start and stop of the feature. Once we have defined these regions, we use the \Rmethod{getMeans()} function to calculate the mean intensity over these regions
+for each transcript in our gff annotation. This function returns a list. Each entry of the list represents one of the regions defined above and contains
+a vector with all mean signals of the annotated featues. 
+
+<<means,echo=TRUE, print=FALSE, results=hide>>=
+means_rpb3 <- getMeans(rpb3_rankpercentile_ratio, probeAnnoChr1, transcriptAnno[which(transcriptAnno$name %in% filteredIDs),], info)
+@
+
+Now, that we have the mean ChIP signals, we could define another vector, which contains e.g. gene expression values and visualize the correlation of the specific regions to
+the expression value. For this purpose the function \Rmethod{correlate()} from this package can be used to easily calculate the correlation between the different areas and the
+corresponding expression value. In this example, we just plot the mean signal over the different areas. The last thing we need to define for the visualization is the order of
+the boxes in the lower panel of the plot (see figure \ref{figure8}). In this lower panel, the different regions along the transcript, defined in the data frame \Robject{info} are shown.
+The numbering of the levels starts at the bottom with level 1. Now we add this information to the data frame and call \Rmethod{correlationPlot()}. \\
+
+<<correlationPlot, eval=FALSE, echo=TRUE>>=
+info$cor <- sapply(means_rpb3, mean, na.rm=T)
+level <- c(1, 1, 2, 3, 4, 5, 6, 1, 1, 2)
+info$level <- level
+correlationPlot(info, labels=c("TSS", "TTS"))
+@ 
+
+<<correlationPlot,eval=TRUE,results=hide,echo=FALSE>>=
+png("corPlot.png", height=400, width=360)
+info$cor <- sapply(means_rpb3, mean, na.rm=T)
+level <- c(1, 1, 2, 3, 4, 5, 6, 1, 1, 2)
+info$level <- level
+correlationPlot(info, labels=c("TSS", "TTS"))
+dev.off()
+@
+
+\begin{figure}[htp]
+  \centering
+  \includegraphics[width=7.5cm]{corPlot.png}
+\caption{\Rmethod{correlationPlot} of the mean intensities over areas around transcription start site (TSS) and the transcription termination site (TTS) of annotated transcripts from chromosome 1 \cite{steinmetz:2006}. 
+		The lower panel shows the the analyzed regions. The upper panel shows the mean intensity over the individual regions.}
+\label{figure8}
+\end{figure}
+
+\subsection{Visualization of a set of ``profiles''}
+\Rpackage{Starr} provides functions for the visualization of a set of ``profiles'' (e.g. time series, signal levels along genomic positions). Suppose that we are interested in the
+ChIP profile of a protein along the transcription start site. One way of looking over the inensity profiles is to take the mean intensity at each available position along this region. This illustration
+gives a first view of the main tendency in the profiles. But some profiles with e.g. extremely high values can easily lead to a distorted mean profile. To get a more detailed view on a group of profiles and their
+divergence, we developed the \Rmethod{profileplot}. \\
+In this function, the profiles are given as the rows of a samples times $\times$ positions matrix that contains the respective signal of a sample at given position.
+Instead of plotting a line for each profile (e.g. column of the row), the q-quantiles for each position (e.g. column of the matrix) are calculated, where q runs through a set of representative quantiles. 
+Then for each q, the profile line of the q-quantiles is plotted. Color coding of the quantile profiles aids the interpretation of the plot: There is a color gradient from the median profile to the 0 (=min) resp. 1 (=max) quantile.
+The following example shows how this function is used. First we construct an example data matrix.
+
+<<profileplotExampleData, echo=TRUE, eval=FALSE>>=
+sampls = 100
+probes = 63
+at = (-31:31)*14
+clus = matrix(rnorm(probes*sampls,sd=1),ncol=probes)
+clus= rbind( t(t(clus)+sin(1:probes/10))+1:nrow(clus)/sampls , t(t(clus)+sin(pi/2+1:probes/10))+1:nrow(clus)/sampls )
+@
+
+Next, we apply kmeans clustering to identify two different clusters and construct a ``character'' vector, that indicates to which cluster an individual profile belongs.
+
+<<profileplotExampleData, eval=FALSE, echo=TRUE>>=
+labs = paste("cluster",kmeans(clus,2)$cluster)
+@
+
+Then we apply the \Rmethod{profileplot} function. In this case, the quantiles from the 5\%- to the 95\%-quantile are shown with the color gradient (see figure \ref{profileplot}). The median is shown as black line. The 25\%- and the
+75\%-quantile are shown as grey lines. The grey lines in the background show the original profiles of the different clusters.
+
+<<profileplotExampleData, eval=FALSE, echo=TRUE>>=
+par(mfrow=c(1,2))
+profileplot(clus,label=labs,main="Clustered data",colpal=c("heat","blue"),add.quartiles=T,fromto=c(0.05,0.95))
+@
+
+<<profileplot,eval=TRUE,results=hide,echo=FALSE>>=
+png("profileplot.png", height=400, width=720)
+sampls = 100
+probes = 63
+at = (-31:31)*14
+clus = matrix(rnorm(probes*sampls,sd=1),ncol=probes)
+clus= rbind( t(t(clus)+sin(1:probes/10))+1:nrow(clus)/sampls , t(t(clus)+sin(pi/2+1:probes/10))+1:nrow(clus)/sampls )
+labs = paste("cluster",kmeans(clus,2)$cluster)
+par(mfrow=c(1,2))
+profileplot(clus,label=labs,main="Clustered data",colpal=c("heat","blue","red","topo"),add.quartiles=T,fromto=c(0.05,0.95))
+dev.off()
+@
+
+\begin{figure}[htp]
+  \includegraphics[width=15cm]{profileplot.png}
+\caption{\Rmethod{profileplot} of two clusters identified by kmeans clustering. The quantiles from the 5\%- to the 95\%-quantile are shown with the color gradient. The median is shown as black line. The 25\%- and the
+75\%-quantile are shown as grey lines. The grey lines in the background show the original profiles of the different clusters.}
+\label{profileplot}
+\end{figure}
+
+\subsection{Visualize profiles of ChIP signals along genomic features}
+With the just described methods, one can easily visualize ChIP profiles over annotated features of groups of genes (e.g. different groups of genes identified by a clustering method). 
+To exemplify the usage of this visualization method, we build a gff annotation for the transcription start sites from our transcript annotation. For that purpose, we use the transcript annotation
+and set the end position of each transcript to its start site.\\
+
+<<echo=TRUE, print=FALSE, results=hide>>=
+tssAnno <- transcriptAnno
+watson <- which(tssAnno$strand == 1)
+tssAnno[watson,]$end <- tssAnno[watson,]$start
+crick <- which(tssAnno$strand == -1)
+tssAnno[crick,]$start <- tssAnno[crick,]$end
+@
+
+Then we use the \Rmethod{getProfiles()} function to obtain the profiles over 500 bp upstream and downstream around the transcription start site. The function constructs a list
+with the profiles and stores information about the border (like TSS, TTS, start, stop codon, etc.), as well as the length of the flanking upstream and downstream areas (500 bp here).
+<<echo=TRUE, print=FALSE, results=hide>>=
+profile <- getProfiles(rpb3_rankpercentile_ratio, probeAnnoChr1, tssAnno, 500, 500, feature="TSS", borderNames="TSS", method="basewise")
+@
+
+Further on, we use the \Rmethod{plotProfiles()} function generate a plot of the mean ChIP profiles and a \Rmethod{profileplot} (as described in the previous section) of the annotated features (see figure \ref{clusterplot}). \\
+
+<<plotProfiles, echo=TRUE,  eval=FALSE>>=
+clust <- rep(1, dim(tssAnno)[1])
+names(clust) <- tssAnno$name
+plotProfiles(profile, cluster=clust)
+@ 
+
+<<plotProfiles,eval=TRUE,results=hide,echo=FALSE>>=
+png("sumPlot.png", height=400, width=720)
+clust <- rep(1, dim(tssAnno)[1])
+names(clust) <- tssAnno$name
+plotProfiles(profile, cluster=clust, type="l", lwd=2)
+dev.off()
+@
+
+
+\begin{figure}[htp]
+  \centering
+  \includegraphics[width=15cm]{sumPlot.png}
+\caption{Visualization of the ChIP profiles along the transcription start site (TSS). On left left side the mean profile of the ChIP signals are shown. I.e., the mean signal at each available position is plotted.  
+The \Rmethod{profileplot} on the rigtht side gives a more detailed view of the intensity profiles.}
+\label{clusterplot}
+\end{figure}
+
+
+\subsection{Peak-finding and visualization using \Rpackage{Ringo}}
+In this section we shortly present how functions from the package \Rmethod{Ringo} can be used for further data analysis.
+Note that the rank percentile normalization should not be used, if peak-finding is applied. This is only done to illustrate the functions of the package.
+For a detailed description of the following work-flow see the \Rpackage{Ringo} vignette.
+Like it is recommended in the \Rpackage{Ringo} vignette, we first need to smooth the ChIP-chip intensities and define a threshold \Robject{y0} for enriched regions.
+
+<<smoothing, echo=TRUE, print=FALSE, results=hide>>=
+rpb3_ratio_smooth <- computeRunningMedians(rpb3_rankpercentile_ratio, probeAnno=probeAnnoChr1, allChr = "chr1", winHalfSize = 80)
+sampleNames(rpb3_ratio_smooth) <- paste(sampleNames(rpb3_rankpercentile_ratio),"smoothed")
+y0 <- apply(exprs(rpb3_ratio_smooth), 2, upperBoundNull)
+@
+
+The cutoff for maximum amount of base pairs at which enriched probes are condensed into one ChIP enriched region is taken as the maximal transcript length.
+We use the \Rpackage{Ringo} function \Rmethod{findChersOnSmoothed()} to identify ChIP enriched regions.
+<<ChIP-enriched regions, echo=TRUE, print=FALSE, results=hide>>=
+distCutOff <- max(transcriptAnno$end - transcriptAnno$start)
+chers <- findChersOnSmoothed(rpb3_ratio_smooth, probeAnno=probeAnnoChr1, thresholds=y0, allChr="chr1", distCutOff=distCutOff, cellType="yeast", minProbesInRow = 10)
+@
+
+Then regions with a maximal distance of 500 bp upstream to a transcript are related to the corresponding annotated features in the \Robject{transcriptAnno}.
+Below, five ChIP enriched regions that could be associated to an annotated feature are shown. They are sorted by the highest smoothed probe level in the enriched region.
+<<ChIP-enriched regions, echo=TRUE,results=hide>>=
+chers <- relateChers(chers, transcriptAnno, upstream=500)
+@
+<<ChIP-enriched regions, echo=TRUE>>=
+chersD <- as.data.frame.cherList(chers)
+chersD <- chersD[which(chersD$feature != ""),]
+chersD[order(chersD$maxLevel, decreasing=TRUE)[1:5],]
+@
+
+Now we can plot the ChIP-enriched region, which was related to the feature with the maximal signal within the enriched area. Figure \ref{cher} shows this region.
+<<Plotting ChIP-enriched regions, echo=TRUE, eval=FALSE, results=hide>>=
+plot(chers[[11]], rpb3_ratio_smooth, probeAnno=probeAnnoChr1, gff=transcriptAnno, paletteName="Spectral")
+@
+
+<<plotProfiles,eval=TRUE,results=hide,echo=FALSE>>=
+png("cher.png", height=400, width=720)
+plot(chers[[11]], rpb3_ratio_smooth, probeAnno=probeAnnoChr1, gff=transcriptAnno, paletteName="Spectral")
+dev.off()
+@
+
+\begin{figure}[htp]
+  \centering
+  \includegraphics[width=15cm]{cher.png}
+\caption{One of the identified Rpb3-antibody enriched regions on chromosome 1}
+\label{cher}
+\end{figure}
+
+
+\section{Concluding Remarks}
+The package \Rpackage{Starr} facilitates the analysis of ChIP-chip data, in particular that of Affymetrix.
+It provides functions for data import, normalization and analysis.
+Besides that, high-level plots for quality assessment and the analysis of ChIP-profiles and ChIP-signals are available.
+Functions for smoothing operations, peak-finding, and quality control plots can be applied.\\
+
+This vignette was generated using the following package versions:
+
+<<sessionInfo, echo=FALSE, results=tex>>=
+toLatex(sessionInfo())
+@
+
+\section*{Acknowledgments}
+I thank Michael Lidschreiber, Andreas Mayer and Kemal Akman for their help. Further on, I want to thank the reviewer for useful comments on the package.
+
+\bibliographystyle{abbrv}
+\bibliography{bibliography}
+
+
+
+\end{document}
+
+
