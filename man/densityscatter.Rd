@@ -20,8 +20,7 @@ densityscatter(x,y,pch=19,cex=0.1,ncol=30,grid=100,palette="heat", add=F,...)
 \item{...}{parameters passed to plot or points}
 }
 \author{ Benedikt Zacher \email{zacher@lmb.uni-muenchen.de}}
-\seealso{\code{\link[Starr]{kde2plot}},\code{\link[graphics]{plot.default}},
-  \code{\link[graphics]{points.default}}}
+\seealso{\code{\link[Starr]{kde2dplot}}}
 \examples{
 ##
 points = 10^4

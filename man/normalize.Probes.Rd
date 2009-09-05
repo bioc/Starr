@@ -48,7 +48,7 @@ normalize.Probes(eSet, method=NULL, ratio=FALSE, ip, control, description, fkt=m
  }
 }
 \author{ Benedikt Zacher \email{zacher@lmb.uni-muenchen.de}}
-\seealso{\code{\link[Starr]{normalize.MAT}}, \code{\link[limma]{normalizeBetweenArrays}}, \code{\link[affy]{normalize.loess}}
+\seealso{\code{\link[Starr]{normalize.MAT}}, \code{\link[limma:normalizebetweenarrays]{normalizeBetweenArrays}}, \code{\link[affy]{normalize.loess}}
 		, \code{\link[Starr]{substract}}, \code{\link[Starr]{rankPercentile.normalize}}}
 \examples{
 ##

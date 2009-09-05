@@ -14,5 +14,5 @@ makeProbeAnno(posFile=NULL, bpmap=NULL, probeIDAsStrings=F)
 \item{probeIDAsStrings}{should the mapping of the probes to the rows in the assayData be integers or characters.}
 }
 \author{ Benedikt Zacher \email{zacher@lmb.uni-muenchen.de}}
-\seealso{\code{\link[Ringo]{posToProbeAnno}},\code{\link[affxparser]{readBpmap}}}
+\seealso{\code{\link[Ringo:posToProbeAnnoEnvironment]{posToProbeAnno}},\code{\link[affxparser]{readBpmap}}}
 \keyword{manip}

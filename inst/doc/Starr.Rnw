@@ -493,7 +493,7 @@ Now we can plot the ChIP-enriched region, which was related to the feature with 
 plot(chers[[11]], rpb3_ratio_smooth, probeAnno=probeAnnoChr1, gff=transcriptAnno, paletteName="Spectral")
 @
 
-<<plotProfiles,eval=TRUE,results=hide,echo=FALSE>>=
+<<Plotting ChIP-enriched regions,eval=TRUE,results=hide,echo=FALSE>>=
 png("cher.png", height=400, width=720)
 plot(chers[[11]], rpb3_ratio_smooth, probeAnno=probeAnnoChr1, gff=transcriptAnno, paletteName="Spectral")
 dev.off()

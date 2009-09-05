@@ -14,6 +14,6 @@ expressionByFeature(eSet, fkt, method="median")
 \item{fkt}{ Function to convert the featureNames (e.g. affy IDs) of eSet to the required features (e.g. ORFs)}
 \item{method}{ If one feature (e.g. ORF) has more than one feature (e.g. affy ID) on the chip, the mean/median over the intensities is taken}
 }
-\seealso{\code{\link[base]{mget}}}
+\seealso{\code{\link[base:get]{mget}}}
 \author{ Benedikt Zacher \email{zacher@lmb.uni-muenchen.de}}
 \keyword{manip}

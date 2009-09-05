@@ -14,5 +14,5 @@ normalize.MAT(eSet, ...)
 \item{...}{parameters, which are passed to the normalizeProbes function of the package rMAT}
 }
 \author{ Benedikt Zacher \email{zacher@lmb.uni-muenchen.de}}
-\seealso{\code{\link[rMAT]{normalizeProbes}}}
+\seealso{\code{\link[rMAT]{NormalizeProbes}}}
 \keyword{internal}

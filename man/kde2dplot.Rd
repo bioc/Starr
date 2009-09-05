@@ -17,7 +17,7 @@ kde2dplot(x,y,grid=50, ncol=30,nlevels=10,main="")
 \item{main}{head of plot}
 }
 \author{ Benedikt Zacher \email{zacher@lmb.uni-muenchen.de}}
-\seealso{\code{\link[MAAS]{kde2d}}}
+\seealso{\code{\link[MASS]{kde2d}}}
 \examples{
 ##
 points = 10^4

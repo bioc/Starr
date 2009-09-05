@@ -15,7 +15,7 @@ plotMA(eSet, ip=NULL, control=NULL, col=NULL)
 \item{col}{color, to fill the boxes}
 }
 \author{ Benedikt Zacher \email{zacher@lmb.uni-muenchen.de}}
-\seealso{\code{\link[affy]{ma.plot}}}
+\seealso{\code{\link[affy:MAplot]{ma.plot}}}
 \examples{
 ##
 mat <- matrix(rnorm(1000000), ncol=4)

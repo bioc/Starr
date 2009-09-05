@@ -16,7 +16,7 @@ makeSplines(profiles, df=1000)
 a list as it is created by the getProfiles function.
 }
 \author{ Benedikt Zacher \email{zacher@lmb.uni-muenchen.de}}
-\seealso{\code{\link[pspline]{sm.spline}}, \code{\link[pspline]{predict}}}
+\seealso{\code{\link[pspline]{smooth.Pspline}}, \code{\link[pspline]{predict.smooth.Pspline}}}
 
 \examples{
 ## 
