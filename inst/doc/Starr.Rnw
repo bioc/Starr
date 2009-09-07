@@ -489,19 +489,14 @@ chersD[order(chersD$maxLevel, decreasing=TRUE)[1:5],]
 @
 
 Now we can plot the ChIP-enriched region, which was related to the feature with the maximal signal within the enriched area. Figure \ref{cher} shows this region.
-<<Plotting ChIP-enriched regions, echo=TRUE, eval=FALSE, results=hide>>=
-plot(chers[[11]], rpb3_ratio_smooth, probeAnno=probeAnnoChr1, gff=transcriptAnno, paletteName="Spectral")
-@
 
-<<Plotting ChIP-enriched regions,eval=TRUE,results=hide,echo=FALSE>>=
-png("cher.png", height=400, width=720)
+<<plotCher, fig=TRUE, include=FALSE, width=9.6, height=4.8, results=hide, along=TRUE>>=
 plot(chers[[11]], rpb3_ratio_smooth, probeAnno=probeAnnoChr1, gff=transcriptAnno, paletteName="Spectral")
-dev.off()
 @
 
 \begin{figure}[htp]
   \centering
-  \includegraphics[width=15cm]{cher.png}
+  \includegraphics[width=15cm]{Starr-plotCher.pdf}
 \caption{One of the identified Rpb3-antibody enriched regions on chromosome 1}
 \label{cher}
 \end{figure}
