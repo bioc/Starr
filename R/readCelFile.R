@@ -49,8 +49,7 @@ readCelFile <- function(bpmap, cel_files, names, type, experimentData=NULL, feat
 		cat("Creating featureData\n")
 		fd <- new("AnnotatedDataFrame", 
 			data = data.frame(
-				chr = factor(unlist(lapply(as.vector(unlist(lapply(bpmap, function(x) {x[["seqInfo"]][["name"]]}))), function(y) {rep(y, length(cel_indices[[y]]))}))), 
-				seq = unlist(lapply(bpmap, function(x) {x[["probeseq"]]})), 
+				chr = factor(unlist(lapply(as.vector(unlist(lapply(bpmap, function(x) {x[["seqInfo"]][["fullname"]]}))), function(y) {rep(y, length(cel_indices[[grep(y,names(cel_indices))[[1]]]]))}))), seq = unlist(lapply(bpmap, function(x) {x[["probeseq"]]})), 
 				pos = unlist(lapply(bpmap, function(x) {x[["startpos"]]})),
 				stringsAsFactors = FALSE), 
 			varMetadata = data.frame(
