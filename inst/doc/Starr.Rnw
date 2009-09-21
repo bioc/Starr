@@ -6,7 +6,7 @@
 
 
 \title{Starr: Simple Tiling ARRay analysis \\ for Affymetrix ChIP-chip data}
-\author{Benedikt Zacher}
+\author{Benedikt Zacher, Achim Tresch}
 
 \SweaveOpts{echo=FALSE}
 \usepackage{a4wide}

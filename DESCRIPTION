@@ -1,12 +1,12 @@
 Package: Starr
-Version: 1.1.5
+Version: 1.1.6
 Date: 2009-09-05
 Title: Simple tiling array analysis of Affymetrix ChIP-chip data
 Author: Benedikt Zacher, Johannes Soeding, Matthias Siebert, Achim Tresch
 Maintainer: Benedikt Zacher <zacher@lmb.uni-muenchen.de>
 Depends: Ringo, affy, affxparser
 Imports: rMAT, pspline, vsn, MASS
-Description: This package facilitates the analysis of ChIP-chip data, in particular that of Affymetrix. The main functionalities of the package are data read-in, quality assessment and data visualization. Besides that, this package makes functions for the further analysis of the data available. These include association of ChIP signals with annotated features, gene filtering as well as the combined analysis of the ChIP signals and other data (e.g. gene expression). Further on, Starr has functions for visualization of the ChIP-profiles of different clusters of annotated features. It uses the basic bioconductor class ExpressionSet and the probeAnno class from the Ringo package. All functions from Ringo, which operate on probeAnno and ExpressionSet, such as smoothing or peak-finding can be employed in this package. Further on, all functions for data analysis from this package can be used to investigate preprocessed data from Ringo.
+Description: This package facilitates the analysis of ChIP-chip data, in particular that of Affymetrix. The main functionalities of the package are data read-in, quality assessment and data visualization. Besides that, this package makes functions for the further analysis of the data available. These include association of ChIP signals with annotated features, gene filtering as well as the combined analysis of the ChIP signals and other data (e.g. gene expression). Further on, Starr has functions for visualization of the ChIP-profiles of different clusters of annotated features. It uses the basic bioconductor class ExpressionSet and the probeAnno class from the Ringo package. All functions from Ringo, which operate on probeAnno and ExpressionSet, such as smoothing or peak-finding can be employed in this package. Contrary, all functions for data analysis from this package can be used to investigate preprocessed data from Ringo.
 License: Artistic-2.0
 biocViews:
         Microarray,OneChannel,DataImport,QualityControl,Preprocessing,ChIPchip
