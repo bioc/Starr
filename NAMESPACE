@@ -1,13 +1,11 @@
 export("bpmapToProbeAnno", "profileplot", "correlate", "correlationPlot",       
-		"expressionByFeature", "expressionSet2TilingSet",  
-		"fill", "fillNA", "filterGenes",
+		"expressionByFeature", "fill", "fillNA", "filterGenes",
 		"getFeature", "getIntensities", 		
 		"getMeans", "getProfiles",           
 		"getProfilesByBase", "getRatio",             
 		"intersection", "list2matrix",             
 		"makeProbeAnno", "mapFeatures",             
-		"normalize.MAT", "normalize.Probes",        
-		"plotBoxes",  "plotDensity",           
+		"normalize.Probes", "plotBoxes",  "plotDensity",           
 		"plotGCbias", "plotImage",              
 		"plotMA",  "plotPosBias",            
 		"plotProfiles", "rankPercentile.normalize",
@@ -25,7 +23,6 @@ export("bpmapToProbeAnno", "profileplot", "correlate", "correlationPlot",
 import(Ringo)
 import("pspline")
 import("MASS")
-import("rMAT")
 importFrom("affy", "xy2indices", "normalize.loess")
 importFrom("affxparser", "readBpmap", "readCel", "readCelHeader", "readCelIntensities")
 

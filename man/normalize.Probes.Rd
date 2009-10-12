@@ -12,7 +12,7 @@ normalize.Probes(eSet, method=NULL, ratio=FALSE, ip, control, description, fkt=m
 \item{eSet}{An ExpressionSet, containing the logged raw intensities}
 \item{method}{character string specifying the normalization method to be used. Choices are 
 				"none", "scale", "quantile", "Aquantile", "Gquantile", "Rquantile",
-				"Tquantile", "vsn", "rankpercentile", "MAT", "loess", "substract".}
+				"Tquantile", "vsn", "rankpercentile", "loess", "substract".}
 \item{ratio}{if TRUE, the ratios are calcualted.}
 \item{ip}{a boolean vector, indicating which sample are IP experiments}
 \item{control}{a boolean vector, indicating which sample are CONTROL experiments}
@@ -23,7 +23,7 @@ normalize.Probes(eSet, method=NULL, ratio=FALSE, ip, control, description, fkt=m
 \item{...}{arguments, that should be passed to the normalization methods.}
 }
 \details{
- The procedure calls different functions from this package or from affy, limma and rMAT, depending on the method.
+ The procedure calls different functions from this package or from affy and limma, depending on the method.
  \describe{
    \item{none}{Calls \code{normalizeWithinArrays} with \code{method="none"}  from package limma.}   
 	 \item{scale}{Calls \code{normalizeWithinArrays} with
@@ -43,12 +43,11 @@ normalize.Probes(eSet, method=NULL, ratio=FALSE, ip, control, description, fkt=m
 	 \item{loess}{Calls \code{normalize.loess} from package affy.}
    \item{rankpercentile}{Calls \code{rankPercentile.normalize} from this package.}
     \item{substract}{Calls \code{substract} from this package.}
-	\item{MAT}{Calls \code{normalize.MAT} from this package. The ExpressionSet is converted into a tilingSet. Then the \code{normalizeProbes} function from the rMAT package is called.}
 
  }
 }
 \author{ Benedikt Zacher \email{zacher@lmb.uni-muenchen.de}}
-\seealso{\code{\link[Starr]{normalize.MAT}}, \code{\link[limma:normalizebetweenarrays]{normalizeBetweenArrays}}, \code{\link[affy]{normalize.loess}}
+\seealso{\code{\link[limma:normalizebetweenarrays]{normalizeBetweenArrays}}, \code{\link[affy]{normalize.loess}}
 		, \code{\link[Starr]{substract}}, \code{\link[Starr]{rankPercentile.normalize}}}
 \examples{
 ##

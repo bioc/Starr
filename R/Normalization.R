@@ -17,8 +17,7 @@ normalize.Probes <- function(eSet, method=NULL, ratio=FALSE, ip, control, descri
 										Tquantile = normalizeBetweenArrays(exprs(eSet), method="Tquantile", targets=targets, ...),
 										vsn = normalizeBetweenArrays(exprs(eSet), method="vsn", targets=targets, ...),
 										rankpercentile = rankPercentile.normalize(exprs(eSet)),
-										substract = substract(exprs(eSet), ...),
-										MAT = normalize.MAT(eSet, ...))
+										substract = substract(exprs(eSet), ...))
 	
 	exprs(eSet) <- normalizedMatrix
 	preproc(experimentData(eSet)) <- list(normalization = "method")
@@ -56,29 +55,29 @@ rankPercentile.normalize <- function(matrix) {
 
 
 
-expressionSet2TilingSet <- function(eSet) {
-	#cat("Converting tilingSet to ExpressionSet\n")
-	featureChromosome <- as.vector(featureData(eSet)$chr)
-	featurePosition <- featureData(eSet)$pos
-	featureCopyNumber <- as.integer(rep(1, length=length(featurePosition)))
-	exprs <- exprs(eSet)
-	featureSequence <- featureData(eSet)$seq
-	
-	
-	newSet <- new('tilingSet', featureChromosome=featureChromosome, featureSequence=featureSequence,
-				featurePosition=featurePosition, featureCopyNumber=featureCopyNumber, exprs=exprs, experimentData=experimentData(eSet))				
-}
+#expressionSet2TilingSet <- function(eSet) {
+#	#cat("Converting tilingSet to ExpressionSet\n")
+#	featureChromosome <- as.vector(featureData(eSet)$chr)
+#	featurePosition <- featureData(eSet)$pos
+#	featureCopyNumber <- as.integer(rep(1, length=length(featurePosition)))
+#	exprs <- exprs(eSet)
+#	featureSequence <- featureData(eSet)$seq
+#	
+#	
+#	newSet <- new('tilingSet', featureChromosome=featureChromosome, featureSequence=featureSequence,
+#				featurePosition=featurePosition, featureCopyNumber=featureCopyNumber, exprs=exprs, experimentData=experimentData(eSet))				
+#}
 
-normalize.MAT <- function(eSet, ...) {
-	#if(verbose)
-	#	cat("Normalizing probes...\n")
-	ScSet <- expressionSet2TilingSet(eSet)
-	ScSetNorm <- NormalizeProbes(ScSet, ...)
-	mat <- exprs(ScSetNorm)
-	rownames(mat) <- featureNames(eSet)
-	colnames(mat) <- colnames(exprs(eSet))
-	mat
-}
+#normalize.MAT <- function(eSet, ...) {
+#	#if(verbose)
+#	#	cat("Normalizing probes...\n")
+#	ScSet <- expressionSet2TilingSet(eSet)
+#	ScSetNorm <- NormalizeProbes(ScSet, ...)
+#	mat <- exprs(ScSetNorm)
+#	rownames(mat) <- featureNames(eSet)
+#	colnames(mat) <- colnames(exprs(eSet))
+#	mat
+#}
 
 
 
