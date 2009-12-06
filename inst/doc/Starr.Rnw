@@ -222,23 +222,23 @@ the probe sequence. But there is also a remarkable dependency on base position w
 
 
 \section{Normalization of the data}
-After quality assessment, we perform normalization of the raw data. Here we use the rank percentile normalization, which was proposed by Buck and Lieb \cite{rankpercentile}.
+After quality assessment, we perform normalization of the raw data. Here we use the cyclic loess normalization.
 <<echo=TRUE, results=hide>>=
-rpb3_rankpercentile <- normalize.Probes(rpb3Chr1, method="rankpercentile")
+rpb3_loess <- normalize.Probes(rpb3Chr1, method="loess")
 @
 
-Besides this normalization method, there are e.g. loess, scale, quantile, vsn, MAT and some others available.
+Besides this normalization method, there are e.g. median rank percentile \cite{rankpercentile}, scale, quantile, vsn, MAT and some others available.
 After normalization, we perform again diagnositc plots to assert that the normalization was appropriate for the correction of the systematic measurement errors.
 The MA-plot of the normalized data does not show any dependence of the M and A values (see figure \ref{figure6}).\\
 
 
 <<MA-plot of the normalized data, eval=FALSE, echo=TRUE>>=
-plotMA(rpb3_rankpercentile, ip=ips, control=controls)
+plotMA(rpb3_loess, ip=ips, control=controls)
 @ 
 
 <<MA-plot of the normalized data,eval=TRUE,results=hide,echo=FALSE>>=
 png("maNorm.png", height=400, width=720)
-plotMA(rpb3_rankpercentile, ip=ips, control=controls)
+plotMA(rpb3_loess, ip=ips, control=controls)
 dev.off()
 @
 
@@ -253,7 +253,7 @@ dev.off()
 Now we calculate the ratio of the probe intensities. Median values over replicates are taken.
 <<Calculating ratio, echo=TRUE, results=hide>>=
 description <- c("Rpb3vsWT")
-rpb3_rankpercentile_ratio <- getRatio(rpb3_rankpercentile, ips, controls, description, fkt=median, featureData=F)
+rpb3_loess_ratio <- getRatio(rpb3_loess, ips, controls, description, fkt=median, featureData=F)
 @
 
 
@@ -262,15 +262,15 @@ In this case the normalization and reference experiment was adequate to correct 
 
 <<Sequence-specific hybridization bias (normalized data), eval=FALSE, echo=TRUE>>=
 par(mfcol=c(1,2))
-plotGCbias(exprs(rpb3_rankpercentile_ratio)[,1], featureData(rpb3_rankpercentile)$seq, main="")
-plotPosBias(exprs(rpb3_rankpercentile_ratio)[,1], featureData(rpb3_rankpercentile)$seq, ylim=c(-0.5,0.5))
+plotGCbias(exprs(rpb3_loess_ratio)[,1], featureData(rpb3_loess)$seq, main="")
+plotPosBias(exprs(rpb3_loess_ratio)[,1], featureData(rpb3_loess)$seq, ylim=c(-0.5,0.5))
 @ 
 
 <<Sequence-specific hybridization bias (normalized data),eval=TRUE,results=hide,echo=FALSE>>=
 png("posGC2.png", height=400, width=720)
 par(mfcol=c(1,2))
-plotGCbias(exprs(rpb3_rankpercentile_ratio)[,1], featureData(rpb3_rankpercentile)$seq, main="")
-plotPosBias(exprs(rpb3_rankpercentile_ratio)[,1], featureData(rpb3_rankpercentile)$seq, ylim=c(-0.5,0.5))
+plotGCbias(exprs(rpb3_loess_ratio)[,1], featureData(rpb3_loess)$seq, main="")
+plotPosBias(exprs(rpb3_loess_ratio)[,1], featureData(rpb3_loess)$seq, ylim=c(-1,1))
 dev.off()
 @
 
@@ -283,7 +283,7 @@ dev.off()
 
 
 \section{Data analysis}
-Besides the typical ChIP-chip analysis of the data, like visualization or peak finding - which are made available by \Rpackage{Ringo} - \Rpackage{Starr} provides
+Besides the typical ChIP-chip analysis of the data, like visualization (see \Rpackage{Ringo}) or peak finding, \Rpackage{Starr} provides
 additional useful functions to analyze ChIP-signals along specific genomic regions. 
 For this purpose, we need a mapping of the probe intensities in our \Rclass{ExpressionSet} to the genomic positions. To achieve that,
 we construct a \Rclass{probeAnno} object (as provided by \Rpackage{Ringo}). The object consists of
@@ -299,7 +299,7 @@ identify all probes, that match the genome uniquely at the sepcified position. A
 probeAnnoChr1 <- bpmapToProbeAnno(bpmapChr1)
 @
 
-\subsection{Analyze the correlation of ChIP signals to other data}
+\subsection{Analyse the correlation of ChIP signals to other data}
 In the following section we want to demonstrate, how the binding profiles of the protein of interest can be analyzed over annotated genomic features.
 First we read in a gff file, which contains annotations for transcription start (TSS) and termination sites (TTS) of some genes on chromosome 1 \cite{steinmetz:2006}. 
 The \Rmethod{filterGenes()} function filters the annotated features with respect to length, overlaps or distance to other features. In this case
@@ -328,7 +328,7 @@ for each transcript in our gff annotation. This function returns a list. Each en
 a vector with all mean signals of the annotated featues. 
 
 <<means,echo=TRUE, print=FALSE, results=hide>>=
-means_rpb3 <- getMeans(rpb3_rankpercentile_ratio, probeAnnoChr1, transcriptAnno[which(transcriptAnno$name %in% filteredIDs),], info)
+means_rpb3 <- getMeans(rpb3_loess_ratio, probeAnnoChr1, transcriptAnno[which(transcriptAnno$name %in% filteredIDs),], info)
 @
 
 Now, that we have the mean ChIP signals, we could define another vector, which contains e.g. gene expression values and visualize the correlation of the specific regions to
@@ -429,7 +429,7 @@ tssAnno[crick,]$start <- tssAnno[crick,]$end
 Then we use the \Rmethod{getProfiles()} function to obtain the profiles over 500 bp upstream and downstream around the transcription start site. The function constructs a list
 with the profiles and stores information about the border (like TSS, TTS, start, stop codon, etc.), as well as the length of the flanking upstream and downstream areas (500 bp here).
 <<echo=TRUE, print=FALSE, results=hide>>=
-profile <- getProfiles(rpb3_rankpercentile_ratio, probeAnnoChr1, tssAnno, 500, 500, feature="TSS", borderNames="TSS", method="basewise")
+profile <- getProfiles(rpb3_loess_ratio, probeAnnoChr1, tssAnno, 500, 500, feature="TSS", borderNames="TSS", method="basewise")
 @
 
 Further on, we use the \Rmethod{plotProfiles()} function generate a plot of the mean ChIP profiles and a \Rmethod{profileplot} (as described in the previous section) of the annotated features (see figure \ref{clusterplot}). \\
@@ -458,15 +458,72 @@ The \Rmethod{profileplot} on the rigtht side gives a more detailed view of the i
 \end{figure}
 
 
+\subsection{Peak-finding with CMARRT}
+
+Starr implements the CMARRT \cite{cmarrt} agorithm for identification of bound regions. CMARRT extends the standard moving average approach commonly used in the analysis of ChIP-chip data by incorporating the correlation structure in identifying bound regions for data from tiling arrays.
+Probes are declared as bound using adjusted p-values for multiple comparisons under the
+Gaussian approximation. The main function is \Rmethod{cmarrt.ma} which computes the
+p-values for each probe by taking into account the correlation structure.
+CMARRT is developed using the Gaussian approximation approach and thus it is important
+to check if this assumption is violated. 
+
+<<echo=TRUE, print=FALSE, results=hide>>=
+peaks <- cmarrt.ma(rpb3_loess_ratio, probeAnnoChr1, chr=NULL, M=NULL, frag.length=300)
+@
+
+The function \Rmethod{plotcmarrt} produces the diagnostic
+plots (histogram of p-values and normal QQ plots) for comparing the distribution of standardized MA statistics under correlation and independence. If the distribution of the standardized moving average statistics
+$S_{i}^{*}$ is correctly specified, the quantiles of $S_{i}^{*}$ for unbound probes fall along a 45 degree reference
+line against the quantiles from the standard Gaussian distribution. In addition, the p-values
+obtained should be a mixture of uniform distribution between 0 and 1 and a non-uniform
+distribution concentrated near 0. Figure \label{statscmarrt} shows the sta
+
+
+<<diagnostic plots cmarrt, echo=TRUE,  eval=FALSE>>=
+plotcmarrt(peaks)
+@ 
+
+<<diagnostic plots cmarrt,eval=TRUE,results=hide,echo=FALSE>>=
+png("cmarrt.png", height=800, width=720)
+plotcmarrt(peaks)
+dev.off()
+@
+
+\begin{figure}[htp]
+  \centering
+  \includegraphics[width=12.5cm]{cmarrt.png}
+\caption{Fig. 2.
+Normal quantile-quantile plots (qqplot) and histograms of p-values. The right
+panels show the qqplot of $S_i$ and distribution of p-values under correlation structure.
+The bottom left panel shows that if the correlation structure is ignored, the distribution of
+$S_{i}^{*}$ for unbound probes deviates from the standard Gaussian distribution. The top left 
+panel shows that if the correlation structure is ignored, the distribution of p-values
+for unbound probes deviates from the uniform distribution for larger p-values.
+}
+\label{statscmarrt}
+\end{figure}
+
+The list of bound regions is obtained using the function cmarrt.peak for a given error rate control which adjusts the p-values for multiple comparisons.
+
+<<echo=TRUE, print=FALSE, results=hide>>=
+peaklist <- cmarrt.peak(peaks, alpha = 0.05, method = "BH", minrun = 4)
+@
+
+<<echo=TRUE, print=FALSE>>=
+str(peaklist)
+@
+
+The list of bound regions obtained under independence (ignoring the correlation structure) is for comparison. It is not recommended to use this list for downstream analysis.
+
+
 \subsection{Peak-finding and visualization using \Rpackage{Ringo}}
-In this section we shortly present how functions from the package \Rmethod{Ringo} can be used for further data analysis.
-Note that the rank percentile normalization should not be used, if peak-finding is applied. This is only done to illustrate the functions of the package.
+In this section we shortly present how functions from the package \Rmethod{Ringo} can be used for peak finding and visualization.
 For a detailed description of the following work-flow see the \Rpackage{Ringo} vignette.
 Like it is recommended in the \Rpackage{Ringo} vignette, we first need to smooth the ChIP-chip intensities and define a threshold \Robject{y0} for enriched regions.
 
 <<smoothing, echo=TRUE, print=FALSE, results=hide>>=
-rpb3_ratio_smooth <- computeRunningMedians(rpb3_rankpercentile_ratio, probeAnno=probeAnnoChr1, allChr = "chr1", winHalfSize = 80)
-sampleNames(rpb3_ratio_smooth) <- paste(sampleNames(rpb3_rankpercentile_ratio),"smoothed")
+rpb3_ratio_smooth <- computeRunningMedians(rpb3_loess_ratio, probeAnno=probeAnnoChr1, allChr = "chr1", winHalfSize = 80)
+sampleNames(rpb3_ratio_smooth) <- paste(sampleNames(rpb3_loess_ratio),"smoothed")
 y0 <- apply(exprs(rpb3_ratio_smooth), 2, upperBoundNull)
 @
 

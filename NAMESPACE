@@ -1,3 +1,5 @@
+useDynLib(Starr)
+
 export("bpmapToProbeAnno", "profileplot", "correlate", "correlationPlot",       
 		"expressionByFeature", "fill", "fillNA", "filterGenes",
 		"getFeature", "getIntensities", 		
@@ -16,7 +18,9 @@ export("bpmapToProbeAnno", "profileplot", "correlate", "correlationPlot",
 		"writeGFF",  "writePosFile",  
 		"densityscatter", "kde2dplot",
 		"plotScatter", "plotRatioScatter",
-		"makeSplines")
+		"makeSplines", "backgd.sd","cmarrt.ma","cmarrt.peak",
+		"declare.bound", "ma.stat", "plotcmarrt",
+		"rm.small.peak", "sortbygenomic")
 
 
 
