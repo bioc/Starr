@@ -27,7 +27,7 @@ plotcmarrt(cmarrt.ma, freq=FALSE)
 # bpmapChr1 <- readBpmap(file.path(dataPath, "Scerevisiae_tlg_chr1.bpmap"))
 
 # cels <- c(file.path(dataPath,"Rpb3_IP_chr1.cel"), file.path(dataPath,"wt_IP_chr1.cel"), 
- 	file.path(dataPath,"Rpb3_IP2_chr1.cel"))
+# 	file.path(dataPath,"Rpb3_IP2_chr1.cel"))
 # names <- c("rpb3_1", "wt_1","rpb3_2")
 # type <- c("IP", "CONTROL", "IP")
 # rpb3Chr1 <- readCelFile(bpmapChr1, cels, names, type, featureData=TRUE, log.it=TRUE)
