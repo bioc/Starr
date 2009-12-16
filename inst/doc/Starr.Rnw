@@ -299,6 +299,40 @@ identify all probes, that match the genome uniquely at the sepcified position. A
 probeAnnoChr1 <- bpmapToProbeAnno(bpmapChr1)
 @
 
+\subsection{Remapping probes to a current genome build}
+\Rpackage{Starr} provides an easy-to-use method for building new bpmap annotation files with remapped probe sequences. 
+It implements the Aho-Corasick algorithm, which is designed for searching a given set of sequences in a text. 
+Only uniquely matching probes are included in the new annotation file. The genomic sequences must be provided by a \Rpackage{BSgenome} annotation package 
+(see the \Rpackage{BSgenome} vignette on how to build such a package with your own set of sequences). \\
+The example below, shows how to use the function for the given bpmap file from above. 
+First we load the \Rpackage{BSgenome.Scerevisiae.UCSC.sacCer2} and then call the \Rfunction{remap} function. 
+The sequences in this bpmap file are taken from both strands in $5' \rightarrow 3'$ direction, that means we have to search the +1 and -1 strand.
+
+
+<<Remapping probes, echo=TRUE>>=
+library(BSgenome.Scerevisiae.UCSC.sacCer2)
+newbpmap <- remap(bpmapChr1, nseq=500000, bsg=Scerevisiae, reverse_complementary=TRUE)
+@
+
+In this case, 86.99 \% of the probe sequences could be mapped to a unique position in the genome. The method returns a list in the output format of the \Rmethod{affy} function \Rmethod{readBpmap}. 
+
+<<Summary of bpmap, echo=TRUE>>=
+str(newbpmap)
+@
+
+One can use this list either to write a new binary bpmap file, or to create a new \Rclass{probeAnno} object. 
+
+<<Writing binary bpmap file, echo=TRUE, results=hide, eval=FALSE>>=
+writeTpmap("Scerevisiae_new.tpmap", newbpmap)
+tpmap2bpmap("Scerevisiae_new.tpmap", "Scerevisiae_new.bpmap")
+
+pA <- bpmapToProbeAnno(newbpmap)
+@
+
+Please note, that this bpmap file differs from the original file. Consequently, one has to read in the data using this file, otherwise the \Rclass{probeAnno} object will not be compatible with the \Rclass{ExpressionSet}.
+The procedure efficiently works for smaller genomes like \textit{S. cerevisiae} or \textit{Drosophila melangoster}. Searching larger genomes, like \textit{H. sapiens} can be very memory-consuming, so make sure to provide enough. 
+If the memory on your computer is not sufficient, it could be better to use other programs like Mummer. The \Rpackage{Ringo} package contains R scripts to parse its output.
+
 \subsection{Analyse the correlation of ChIP signals to other data}
 In the following section we want to demonstrate, how the binding profiles of the protein of interest can be analyzed over annotated genomic features.
 First we read in a gff file, which contains annotations for transcription start (TSS) and termination sites (TTS) of some genes on chromosome 1 \cite{steinmetz:2006}. 
@@ -476,7 +510,7 @@ plots (histogram of p-values and normal QQ plots) for comparing the distribution
 $S_{i}^{*}$ is correctly specified, the quantiles of $S_{i}^{*}$ for unbound probes fall along a 45 degree reference
 line against the quantiles from the standard Gaussian distribution. In addition, the p-values
 obtained should be a mixture of uniform distribution between 0 and 1 and a non-uniform
-distribution concentrated near 0. Figure \label{statscmarrt} shows the sta
+distribution concentrated near 0. Figure \label{statscmarrt} shows the summary statistics.
 
 
 <<diagnostic plots cmarrt, echo=TRUE,  eval=FALSE>>=
@@ -492,8 +526,7 @@ dev.off()
 \begin{figure}[htp]
   \centering
   \includegraphics[width=12.5cm]{cmarrt.png}
-\caption{Fig. 2.
-Normal quantile-quantile plots (qqplot) and histograms of p-values. The right
+\caption{Normal quantile-quantile plots (qqplot) and histograms of p-values. The right
 panels show the qqplot of $S_i$ and distribution of p-values under correlation structure.
 The bottom left panel shows that if the correlation structure is ignored, the distribution of
 $S_{i}^{*}$ for unbound probes deviates from the standard Gaussian distribution. The top left 
