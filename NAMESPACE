@@ -20,7 +20,7 @@ export("bpmapToProbeAnno", "profileplot", "correlate", "correlationPlot",
 		"plotScatter", "plotRatioScatter",
 		"makeSplines", "backgd.sd","cmarrt.ma","cmarrt.peak",
 		"declare.bound", "ma.stat", "plotcmarrt",
-		"rm.small.peak", "sortbygenomic", "remap", "match_ac")
+		"rm.small.peak", "sortbygenomic")
 
 
 
@@ -29,6 +29,5 @@ import("pspline")
 import("MASS")
 importFrom("affy", "xy2indices", "normalize.loess")
 importFrom("affxparser", "readBpmap", "readCel", "readCelHeader", "readCelIntensities")
-importFrom("BSgenome", "getSeq", "seqnames")
 
 

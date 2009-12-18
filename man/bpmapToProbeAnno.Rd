@@ -1,11 +1,9 @@
 
 \name{bpmapToProbeAnno}
 \alias{bpmapToProbeAnno}
-\title{ Creating a probeAnno object}
-\description{
-\code{bpmapToProbeAnno} This function allows the user to create a probeAnno environment that holds the mapping between
-probes on the array and their genomic match position(s). As input, the function takes an Affymetrix bpmap file.
-}
+\title{Creating a probeAnno object}
+\description{This function allows the user to create a probeAnno environment that holds the mapping between
+probes on the array and their genomic match position(s). The function takes an Affymetrix bpmap file as input.}
 \usage{
 bpmapToProbeAnno(bpmap, verbose=T, uniqueSeq=T)
 }
