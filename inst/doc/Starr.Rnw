@@ -299,15 +299,6 @@ identify all probes, that match the genome uniquely at the sepcified position. A
 probeAnnoChr1 <- bpmapToProbeAnno(bpmapChr1)
 @
 
-\subsection{Remapping probes to a current genome build}
-\Rpackage{Starr} provides an easy-to-use method for building new bpmap annotation files with remapped probe sequences. 
-It implements the Aho-Corasick algorithm, which is designed for searching a given set of sequences in a text. 
-Only uniquely matching probes are included in the new annotation file. The genomic sequences must be provided by a \Rpackage{BSgenome} annotation package 
-(see the \Rpackage{BSgenome} vignette on how to build such a package with your own set of sequences). \\
-The example below, shows how to use the function for the given bpmap file from above. 
-First we load the \Rpackage{BSgenome.Scerevisiae.UCSC.sacCer2} and then call the \Rfunction{remap} function. 
-The sequences in this bpmap file are taken from both strands in $5' \rightarrow 3'$ direction, that means we have to search the +1 and -1 strand.
-
 
 \subsection{Analyse the correlation of ChIP signals to other data}
 In the following section we want to demonstrate, how the binding profiles of the protein of interest can be analyzed over annotated genomic features.
