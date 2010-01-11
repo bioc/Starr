@@ -82,7 +82,7 @@ void destroy(nodep p){
 
 
 int getPos(char c) {
-  int pos;
+  int pos=-1;
     switch(c)
 {
    case 'A':
@@ -107,8 +107,8 @@ return(pos);
 
 
 int get_char(int p) {
-  char c;
-    switch(c)
+char c='-';
+    switch(p)
 {
    case 0:
      c ='A';
@@ -132,7 +132,7 @@ return(c);
 
 
 int get_complement(char c) {
-  char comp;
+  char comp='-';
     switch(c)
 {
    case 'A':
@@ -351,7 +351,7 @@ curr = curr->next;
 	     // printf("to %c\n", a->info);
 	    }
 	  }
-	    if(a->hit_id >= 0 & a->flink != NULL & first_flink == 1) {
+	    if((a->hit_id >= 0) & (a->flink != NULL) & (first_flink == 1)) {
 	int ahits = a->hit_id;
 	if(fnode->hit_id == -1) {
 	  fnode->hit_id = ahits;
@@ -482,7 +482,7 @@ void breadth_first_search1(nodep root) {
 	     // printf("to %c\n", a->info);
 	    }
 	  }
-	  if(a->hit_id >= 0 & a->flink != NULL & first_flink == 1) {
+	  if((a->hit_id >= 0) & (a->flink != NULL) & (first_flink == 1)) {
 	int ahits = a->hit_id;
 	if(fnode->hit_id == -1) {
 	  fnode->hit_id = ahits;
@@ -550,7 +550,7 @@ SEXP find_ac2(SEXP dict, SEXP wcount_p, SEXP text, SEXP num_text, SEXP complemen
  
   
   nodep root;
-  listp queue;
+ // listp queue;
   
  // printf("number of nodes: %d\nSearching...", num_nodes);
   
@@ -599,12 +599,12 @@ for(step=0; step<INTEGER(wcount_p)[0]; step=min(step+INTEGER(nseq)[0], INTEGER(w
 	}*/
 	//printf("currTree=%d\n", currTree-1);
 	//queue = 
-	printf("Number of nodes: %d\n",num_nodes);
+	Rprintf("Number of nodes: %d\n",num_nodes);
       breadth_first_search1(root);
 	
 	
 	
-printf("Searching: ");
+Rprintf("Searching: ");
     for(t=0; t<INTEGER(num_text)[0]; t++) {
 	
 	i=0;
@@ -615,7 +615,7 @@ printf("Searching: ");
 	fp = gzopen(CHAR (STRING_ELT (text, t)), "r");
 	seq = kseq_init(fp);
 	 kseq_read(seq);
-		printf("%s ", seq->name.s);
+		Rprintf("%s ", seq->name.s);
 	//printf("return value: %d\n", l);
 
 	
@@ -653,7 +653,7 @@ printf("Searching: ");
 	  // printf("char=%c\n", get_complement(seq->seq.s[index]));
 	}
 	int stop = 0;
-	while(currnode->links[pos] == NULL & stop != 1) {
+	while((currnode->links[pos] == NULL) & (stop != 1)) {
 	    if(currnode->flink == NULL) {
 	      stop = 1;
 	    }
@@ -663,12 +663,12 @@ printf("Searching: ");
 	}
 	if(currnode->links[pos] != NULL) {
 	  currnode = currnode->links[pos];
-	  if(currnode->hit_id >= 0 | currnode->hit_id == -2) {
+	  if((currnode->hit_id >= 0) | (currnode->hit_id == -2)) {
 	    if(DEBUG) {
 	      // printf("id=");
 	    }
 	    nodep currhit = currnode;
-	    while(currhit->hit_id >= 0 | currhit->hit_id == -2) {
+	    while((currhit->hit_id >= 0) | (currhit->hit_id == -2)) {
 	      if(currhit->hit_id >= 0) {
 		int curr_id=currhit->hit_id; 
 		//if(matcher[curr_id] == NULL) {
@@ -717,7 +717,7 @@ printf("Searching: ");
 	
       }
 
-      if(rev == 1 | revcomp == 1) {
+      if((rev == 1) | (revcomp == 1)) {
       currnode = root;
       lastNorm = currnode;
       lastComp = currnode;
@@ -739,7 +739,7 @@ int from = 0;
 	  // printf("char=%c\n", seq->seq.s[index]);
 	}
 	int stop = 0;
-	while(currnode->links[pos] == NULL & stop != 1) {
+	while((currnode->links[pos] == NULL) & (stop != 1)) {
 	    if(currnode->flink == NULL) {
 	      stop = 1;
 	    }
@@ -749,12 +749,12 @@ int from = 0;
 	}
 	if(currnode->links[pos] != NULL) {
 	  currnode = currnode->links[pos];
-	  if(currnode->hit_id >= 0 | currnode->hit_id == -2) {
+	  if((currnode->hit_id >= 0) | (currnode->hit_id == -2)) {
 	    if(DEBUG) {
 	      // printf("id=");
 	    }
 	    nodep currhit = currnode;
-	    while(currhit->hit_id >= 0 | currhit->hit_id == -2) {
+	    while((currhit->hit_id >= 0) | (currhit->hit_id == -2)) {
 	      if(currhit->hit_id >= 0) {
 		int curr_id=currhit->hit_id; 
 		//if(matcher[curr_id] == NULL) {
@@ -826,9 +826,9 @@ int from = 0;
   free(queue);*/
     }
 
-  printf("\n");
+  Rprintf("\n");
 
-    SEXP result, curr_word, word_ind, word_t, wnames, word_strd;
+    SEXP result, word_ind, word_t, wnames, word_strd;
     PROTECT(result = NEW_LIST(3));
 	PROTECT(wnames = NEW_CHARACTER(3));
 	SET_STRING_ELT(wnames, 0, mkChar("text"));
