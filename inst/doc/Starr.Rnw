@@ -300,12 +300,12 @@ probeAnnoChr1 <- bpmapToProbeAnno(bpmapChr1)
 @
 
 \subsection{Remapping probes to a current genome build}
-\Rpackage{Starr} provides an easy-to-use method for building new bpmap annotation files with remapped probe sequences. 
-It implements the Aho-Corasick algorithm, which is designed for searching a given set of sequences in a text. 
-Only uniquely matching probes are included in the new annotation file. The genomic sequences must be provided as fasta files. Each file is supposed to contain one chromosome. 
+\Rpackage{Starr} provides an easy-to-use method for remapping probe sequences and building new bpmap annotation. 
+It implements the Aho-Corasick \cite{ac} string matching algorithm, which is designed for searching a given set of sequences in a text. 
+The genomic sequences must be provided as fasta files. Each file is supposed to contain one chromosome. 
 The sequences to be searched can be passed to the function either as a character vector or as a bpmap list (returned by Rmethod{readBpmap}).\\
-The example below, shows how to match the sequences of the given bpmap file from above to chromosome 1 of \textit{S. cerevisiae}. 
-The sequences in this bpmap file are taken from both strands in $5' \rightarrow 3'$ direction, that means we have to search the +1 and -1 strand. 
+An example below, shows how to match the sequences of the given bpmap file from above to chromosome 1 of \textit{S. cerevisiae}. 
+Sequences in this bpmap file are taken from both strands in $5' \rightarrow 3'$ direction, that means we have to search the +1 and -1 strand. 
 The sequence of chromosome 1 is stored in a fasta file chrI.fa in the dataPath folder.
 
 
@@ -313,13 +313,23 @@ The sequence of chromosome 1 is stored in a fasta file chrI.fa in the dataPath f
 newbpmap <- remap(bpmapChr1, path=dataPath, reverse_complementary=TRUE, return_bpmap=TRUE)
 @
 
-In this case, 89.5 \% of the probe sequences could be mapped to a unique position on chromosome 1. The method returns a list in the output format of the \Rmethod{affy} function \Rmethod{readBpmap}. 
+In this case, 89.5 \% of the probe sequences could be mapped to a unique position on chromosome 1. The method returns a list in the output format of the \Rmethod{affxparser} function \Rmethod{readBpmap}. 
 
 <<Summary of bpmap, echo=TRUE>>=
 str(newbpmap)
 @
 
-One can use this list either to write a new binary bpmap file, or to create a new \Rclass{probeAnno} object. 
+One can use this list either to write a new binary bpmap file, or to create a new \Rclass{probeAnno} object. Note, that this bpmap file differs from the original file. 
+Consequently, one has to read in the data using this file, otherwise the \Rclass{probeAnno} object will not be compatible with the \Rclass{ExpressionSet}.
+
+
+<<Summary of bpmap, echo=TRUE, eval=FALSE>>=
+writeTpmap("newbpmap.tpmap", newbpmap)
+tpmap2bpmap("newbpmap.tpmap", "newbpmap.bpmap")
+
+pA <- bpmapToProbeAnno(newbpmap)
+@
+
 
 
 \subsection{Analyze the correlation of ChIP signals to other data}

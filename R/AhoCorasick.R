@@ -28,14 +28,21 @@ remap <- function(bpmap=NULL, seqs=NULL, nseq=NULL, path="", complementary=FALSE
 	cat(round(length(which(matches$index >= 0))/length(matches$index)*100, digits=2), "% of the probes could be mapped uniquely.\n")
 	
 	if(return_bpmap) {
+	  take <- which(matches$text >= 1)
 
 	  pmx <- as.vector(unlist(lapply(bpmap, function(x) {
 		    return(x$pmx)
-		})))
+		})))[take]
 
 	  pmy <- as.vector(unlist(lapply(bpmap, function(x) {
 		    return(x$pmy)
-		})))
+		})))[take]
+	  sequences <- sequences[take]
+	  matches$text <- matches$text[take]
+	  matches$index <- matches$index[take]
+	  matches$strand <- matches$strand[take]
+	  matches$text <- matches$textnames[matches$text]
+
 	  splittedByChr <- split(1:length(matches$text), factor(matches$text))
 
 	  newbpmap <- list()
