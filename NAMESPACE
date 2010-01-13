@@ -20,7 +20,7 @@ export("bpmapToProbeAnno", "profileplot", "correlate", "correlationPlot",
 		"plotScatter", "plotRatioScatter",
 		"makeSplines", "backgd.sd","cmarrt.ma","cmarrt.peak",
 		"declare.bound", "ma.stat", "plotcmarrt",
-		"rm.small.peak", "sortbygenomic")
+		"rm.small.peak", "sortbygenomic", "remap", "match_ac")
 
 
 
