@@ -18,7 +18,9 @@ export("bpmapToProbeAnno", "profileplot", "correlate", "correlationPlot",
 		"writeGFF",  "writePosFile",  
 		"densityscatter", "kde2dplot",
 		"plotScatter", "plotRatioScatter",
-		"makeSplines", "remap", "match_ac")
+		"makeSplines", "backgd.sd","cmarrt.ma","cmarrt.peak",
+		"declare.bound", "ma.stat", "plotcmarrt",
+		"rm.small.peak", "sortbygenomic", "remap", "match_ac")
 
 
 

@@ -1,12 +1,12 @@
 Package: Starr
-Version: 1.3.7
+Version: 1.3.8
 Date: 2009-10-12
 Title: Simple tiling array analysis of Affymetrix ChIP-chip data
 Author: Benedikt Zacher, Johannes Soeding, Pei Fen Kuan, Matthias Siebert, Achim Tresch
 Maintainer: Benedikt Zacher <zacher@lmb.uni-muenchen.de>
 Depends: Ringo, affy, affxparser
 Imports: pspline, MASS
-Description: This package facilitates the analysis of ChIP-chip data, in particular that of Affymetrix. The main functionalities of the package are data read-in, quality assessment and data visualization. Besides that, this package makes functions for the further analysis of the data available. These include association of ChIP signals with annotated features, gene filtering as well as the combined analysis of the ChIP signals and other data (e.g. gene expression). Further on, Starr has functions for visualization of the ChIP-profiles of different clusters of annotated features. It uses the basic bioconductor class ExpressionSet and the probeAnno class from the Ringo package. All functions from Ringo, which operate on probeAnno and ExpressionSet, such as smoothing or peak-finding can be employed in this package. Contrary, all functions for data analysis from this package can be used to investigate preprocessed data from Ringo. Another useful tool is the remapping function. It maps probe sequences (e.g. from outdated bpmap files) to the genome and creates a new bpmap annotation for further analysis.
+Description: Starr facilitates the analysis of ChIP-chip data, in particular that of Affymetrix tiling arrays. The package provides functions for data import, quality assessment, data visualization and exploration. Furthermore, it includes high-level analysis features like association of ChIP signals with annotated features, correlation analysis of ChIP signals and other genomic data (e.g. gene expression), peak-finding with the CMARRT algorithm and comparative display of multiple clusters of ChIP-profiles. It uses the basic Bioconductor classes ExpressionSet and probeAnno for maximum compatibility with other software on Bioconductor. All functions from Starr can be used to investigate preprocessed data from the Ringo package, and vice versa. An important novel tool is the the automated generation of correct, up-to-date microarray probe annotation (bpmap) files, which relies on an efficient mapping of short sequences (e.g. the probe sequences on a microarray) to an arbitrary genome.
 License: Artistic-2.0
 biocViews:
         Microarray,OneChannel,DataImport,QualityControl,Preprocessing,ChIPchip
