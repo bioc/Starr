@@ -330,6 +330,18 @@ tpmap2bpmap("newbpmap.tpmap", "newbpmap.bpmap")
 pA <- bpmapToProbeAnno(newbpmap)
 @
 
+The function works efficinetly for all sizes of genomes. Table ref{map} shows a comparison of computation time for different Affymetrix tiling arrays.
+If the memory on your machine is not sufficient for the amount of sequences that should be mapped, the parameter nseq can be set to search the sequences in more than one iteration.
+
+\begin{table}
+  \begin{tabular}{c|c|c|c} 
+  	array & time & \#sequences & genome size (bp) \\ \hline
+	S. cerevisiae Tiling 1.0R & 34 s &  2 697 594 & 12 495 682 \\ 
+	Drosophila Tiling 2.0R & 1 min 16s & 2 907 359 & 122 653 977 \\
+	Human Promoter 1.0R & 14 min 22 s & 4 315 643 & $3.3 * 10^9$ 
+\end{tabular}
+  \caption{Time for remapping of reporter sequences from Affymetrix tiling arrays to a current genome build. Results were calculated on an Intel Core Duo E8600 3.33 GHz machine.} \label{map}
+  \end{table}
 
 
 \subsection{Analyse the correlation of ChIP signals to other data}
