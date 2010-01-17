@@ -330,7 +330,7 @@ tpmap2bpmap("newbpmap.tpmap", "newbpmap.bpmap")
 pA <- bpmapToProbeAnno(newbpmap)
 @
 
-The function works efficinetly for all sizes of genomes. Table ref{map} shows a comparison of computation time for different Affymetrix tiling arrays.
+The function works efficinetly for all sizes of genomes. Table \ref{map} shows a comparison of computation time for different Affymetrix tiling arrays.
 If the memory on your machine is not sufficient for the amount of sequences that should be mapped, the parameter nseq can be set to search the sequences in more than one iteration.
 
 \begin{table}
