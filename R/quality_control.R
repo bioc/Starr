@@ -105,41 +105,53 @@ plotDensity <- function(eSet, oneDevice=T, main="") {
 
 
 
-plotGCbias <- function(intensity, sequence, main="") {
-	gc <- sapply(strsplit(sequence, ""), function(x) sum(x %in% c("C", "G")))
-	boxplot(split(intensity, gc), main=main, varwidth = TRUE, xlab = "GC bases", ylab = "intensity")
+plotGCbias <- function (intensity, sequence, main = "") 
+{
+    gc <- sapply(strsplit(sequence, ""), function(x) sum(x %in% 
+        c("C", "G")))
+    boxplot(split(intensity-mean(intensity, na.rm=TRUE), gc), main = main, varwidth = TRUE, 
+        xlab = "GC bases", ylab = "intensity")
 }
 
-
-
-
-
-plotPosBias <- function(intensity, sequence, main="", ylim=NULL) {
-	
-	means <- list()
-	bases <- c("A", "T", "C", "G")
-	seq <- lapply(sequence, function(x) {unlist(strsplit(x, ""))})
-	cat("Calculating mean intensities for ")
-	indices <- list()
-	for(i in 1:length(bases)) {
-		cat(bases[i], " ")
-		pos <- lapply(seq, function(x) {which(x == bases[i])})
-		for_split <- sapply(1:length(pos), function(x) {rep(x, length(pos[[x]]))})
-		indices <- split(unlist(for_split), unlist(pos))
-		means[[bases[i]]] <- sapply(indices, function(x) {mean(intensity[x], na.rm=T)})
-	}
-	cat("\n")
-	
-	if(is.null(ylim)) {
-		plot(means[["A"]], pch="A", col="green", ylim=c(min(unlist(means)), max(unlist(means))), xlab="position in sequence", ylab="intensity", main=main)
-	}
-	else {
-		plot(means[["A"]], pch="A", col="green", ylim=ylim, xlab="position in sequence", ylab="intensity", main=main)
-	}
-	points(means[["T"]], pch="T", col="blue")
-	points(means[["G"]], pch="G", col="orange")
-	points(means[["C"]], pch="C", col="red")
+plotPosBias <- function (intensity, sequence, main = "", ylim = NULL) 
+{
+    m <- mean(intensity, na.rm=TRUE)
+    means <- list()
+    bases <- c("A", "T", "C", "G")
+    seq <- lapply(sequence, function(x) {
+        unlist(strsplit(x, ""))
+    })
+    cat("Calculating mean intensities for ")
+    indices <- list()
+    for (i in 1:length(bases)) {
+        cat(bases[i], " ")
+        pos <- lapply(seq, function(x) {
+            which(x == bases[i])
+        })
+        for_split <- sapply(1:length(pos), function(x) {
+            rep(x, length(pos[[x]]))
+        })
+        indices <- split(unlist(for_split), unlist(pos))
+        means[[bases[i]]] <- sapply(indices, function(x) {
+            mean(intensity[x], na.rm = T)-m
+        })
+    }
+    cat("\n")
+    if (is.null(ylim)) {
+        plot(means[["A"]], pch = "A", col = "green", ylim = c(min(unlist(means)), 
+            max(unlist(means))), xlab = "position in sequence", 
+            ylab = "intensity", main = main)
+    }
+    else {
+        plot(means[["A"]], pch = "A", col = "green", ylim = ylim, 
+            xlab = "position in sequence", ylab = "intensity", 
+            main = main)
+    }
+    points(means[["T"]], pch = "T", col = "blue")
+    points(means[["G"]], pch = "G", col = "orange")
+    points(means[["C"]], pch = "C", col = "red")
 }
+
 
 
 
