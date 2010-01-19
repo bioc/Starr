@@ -471,7 +471,7 @@ SEXP find_ac2(SEXP dict, SEXP wcount_p, SEXP text, SEXP num_text, SEXP complemen
 		int curr_id=currhit->hit_id; 
 		ntext[curr_id] = t+1;
 		nindex[curr_id] = index+1;
-		strand[curr_id] = -1;
+		strand[curr_id] = 0;
 		nmatch[curr_id] = nmatch[curr_id]+1;
 	      }
 	      currhit=currhit->flink;
