@@ -566,7 +566,7 @@ For a detailed description of the following work-flow see the \Rpackage{Ringo} v
 Like it is recommended in the \Rpackage{Ringo} vignette, we first need to smooth the ChIP-chip intensities and define a threshold \Robject{y0} for enriched regions.
 
 <<smoothing, echo=TRUE, print=FALSE, results=hide>>=
-rpb3_ratio_smooth <- computeRunningMedians(rpb3_loess_ratio, probeAnno=probeAnnoChr1, allChr = "chr1", winHalfSize = 80)
+rpb3_ratio_smooth <- computeRunningMedians(rpb3_loess_ratio, probeAnno=probeAnnoChr1, allChr = "chr1", winHalfSize = 80, modColumn="type")
 sampleNames(rpb3_ratio_smooth) <- paste(sampleNames(rpb3_loess_ratio),"smoothed")
 y0 <- apply(exprs(rpb3_ratio_smooth), 2, upperBoundNull)
 @
