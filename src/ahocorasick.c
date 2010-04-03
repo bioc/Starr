@@ -43,7 +43,7 @@ void destroy(nodep p){
     destroy(p->links[3]);
     free(p);
   }
-  num_nodes=1;
+  num_nodes=0;
 }
 
 
