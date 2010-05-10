@@ -155,7 +155,7 @@ plotPosBias <- function (intensity, sequence, main = "", ylim = NULL)
 
 
 
-plotScatter <- function(eSet, density=F, cluster=T, sample=NULL) {
+plotScatter <- function(eSet, density=F, cluster=T, sample=NULL, cex=1) {
 	if(inherits(eSet, "ExpressionSet")) {
 		eSet <- exprs(eSet)
 	}
@@ -172,7 +172,7 @@ plotScatter <- function(eSet, density=F, cluster=T, sample=NULL) {
 	}
 	
 	if(density) {
-		pairs(eSet, lower.panel=function(x,y) {text(mean(sum(range(x, na.rm=T)))/2, mean(sum(range(y, na.rm=T)))/2, labels=round(cor(x,y, use="pairwise.complete.obs"), 2), cex=1.5)}, upper.panel=function(x,y) {densityscatter(x,y,add=T)})
+		pairs(eSet, lower.panel=function(x,y) {text(mean(sum(range(x, na.rm=T)))/2, mean(sum(range(y, na.rm=T)))/2, labels=round(cor(x,y, use="pairwise.complete.obs"), 2), cex=1.5)}, upper.panel=function(x,y) {densityscatter(x,y,add=T,cex=cex)})
 	}
 	else {
 		pairs(eSet, lower.panel=function(x,y) {text(mean(sum(range(x, na.rm=T)))/2, mean(sum(range(y, na.rm=T)))/2, labels=round(cor(x,y, use="pairwise.complete.obs"), 2), cex=1.5)}, upper.panel=function(x, y) {points(x,y,pch=".");  lines(lowess(x, y), col="red")})#, pch=".", lwd=1)#, col="#00000040")
@@ -181,7 +181,7 @@ plotScatter <- function(eSet, density=F, cluster=T, sample=NULL) {
 
 
 
-plotRatioScatter <- function(eSet, ip, control, density=F, sample=NULL, cluster=T) {
+plotRatioScatter <- function(eSet, ip, control, density=F, sample=NULL, cluster=T, cex=1) {
 	
 	if(inherits(eSet, "ExpressionSet")) {
 		eSet <- exprs(eSet)
@@ -212,7 +212,7 @@ plotRatioScatter <- function(eSet, ip, control, density=F, sample=NULL, cluster=
 	}
 	
 	if(density) {
-		pairs(mat, lower.panel=function(x,y) {text(mean(sum(range(x, na.rm=T)))/2, mean(sum(range(y, na.rm=T)))/2, labels=round(cor(x,y, use="pairwise.complete.obs"), 2), cex=1.5)}, upper.panel=function(x,y) {densityscatter(x,y,add=T)})
+		pairs(mat, lower.panel=function(x,y) {text(mean(sum(range(x, na.rm=T)))/2, mean(sum(range(y, na.rm=T)))/2, labels=round(cor(x,y, use="pairwise.complete.obs"), 2), cex=1.5)}, upper.panel=function(x,y) {densityscatter(x,y,add=T,cex=cex)})
 	}
 	else{
 		pairs(mat, lower.panel=function(x,y) {text(mean(sum(range(x, na.rm=T)))/2, mean(sum(range(y, na.rm=T)))/2, labels=round(cor(x,y, use="pairwise.complete.obs"), 2), cex=1.5)}, upper.panel=function(x, y) {points(x,y,pch=".");  lines(lowess(x, y), col="red")})
@@ -238,7 +238,7 @@ box()
 }
 
 
-densityscatter = function(x,y,pch=19,cex=0.1,ncol=30,grid=100,
+densityscatter = function(x,y,pch=19,cex=1,ncol=30,grid=100,
 			palette="heat", add=F,...){
 
 getfrommat = function(a){d$z[a[1],a[2]]}

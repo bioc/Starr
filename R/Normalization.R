@@ -1,33 +1,37 @@
 
 
 # wrapper for normalization methods
-normalize.Probes <- function(eSet, method=NULL, ratio=FALSE, ip, control, description, fkt=median, featureData=FALSE, targets=NULL, ...) {
-	
-	cat(paste("Normalizing probes with method: ", method, "\n", sep=""))
-	## package affy: normalize.loess
-	## package limma: normalizeBetweenArrays
-	## package rMAT: MAT normalization
-	normalizedMatrix <- switch(method, loess = normalize.loess(exprs(eSet)), 
-										none = normalizeBetweenArrays(exprs(eSet), method="none", targets=targets, ...), 
-										scale = normalizeBetweenArrays(exprs(eSet), method="scale", targets=targets, ...), 
-										quantile = normalizeBetweenArrays(exprs(eSet), method="quantile", targets=targets, ...), 
-										Aquantile = normalizeBetweenArrays(exprs(eSet), method="Aquantile", targets=targets, ...), 
-										Gquantile = normalizeBetweenArrays(exprs(eSet), method="Gquantile", targets=targets, ...), 
-										Rquantile = normalizeBetweenArrays(exprs(eSet), method="Rquantile", targets=targets, ...),
-										Tquantile = normalizeBetweenArrays(exprs(eSet), method="Tquantile", targets=targets, ...),
-										vsn = normalizeBetweenArrays(exprs(eSet), method="vsn", targets=targets, ...),
-										rankpercentile = rankPercentile.normalize(exprs(eSet)),
-										substract = substract(exprs(eSet), ...))
-	
-	exprs(eSet) <- normalizedMatrix
-	preproc(experimentData(eSet)) <- list(normalization = "method")
-	if(ratio) {
-		return(getRatio(eSet, ip, control, description, fkt, featureData))
-	}
-	else {
-		return(eSet)
-	}
-	
+normalize.Probes <- function (eSet, method = NULL, ratio = FALSE, ip, control, description, 
+    fkt = median, featureData = FALSE, targets = NULL, arrays = NULL, ...) 
+{
+    if(is.null(arrays)) {
+    	arrays <- which(colnames(exprs(eSet)) %in% arrays)
+    }
+    else {
+	arrays <- 1:dim(exprs(eSet))[2]
+    }
+    cat(paste("Normalizing probes with method: ", method, "\n", 
+        sep = ""))
+    normalizedMatrix <- switch(method, loess = normalize.loess(exprs(eSet)[,arrays]), 
+        none = normalizeBetweenArrays(exprs(eSet)[,arrays], method = "none", 
+            targets = targets, ...), scale = normalizeBetweenArrays(exprs(eSet)[,arrays], 
+            method = "scale", targets = targets, ...), quantile = normalizeBetweenArrays(exprs(eSet[,arrays]), 
+            method = "quantile", targets = targets, ...), Aquantile = normalizeBetweenArrays(exprs(eSet)[,arrays], 
+            method = "Aquantile", targets = targets, ...), Gquantile = normalizeBetweenArrays(exprs(eSet)[,arrays], 
+            method = "Gquantile", targets = targets, ...), Rquantile = normalizeBetweenArrays(exprs(eSet)[,arrays], 
+            method = "Rquantile", targets = targets, ...), Tquantile = normalizeBetweenArrays(exprs(eSet)[,arrays], 
+            method = "Tquantile", targets = targets, ...), vsn = normalizeBetweenArrays(exprs(eSet)[,arrays], 
+            method = "vsn", targets = targets, ...), rankpercentile = rankPercentile.normalize(exprs(eSet)[,arrays]), 
+        substract = substract(exprs(eSet)[,arrays], ...))
+    exprs(eSet)[,arrays] <- normalizedMatrix
+    preproc(experimentData(eSet)) <- list(normalization = "method")
+    if (ratio) {
+        return(getRatio(eSet, ip, control, description, fkt, 
+            featureData))
+    }
+    else {
+        return(eSet)
+    }
 }
 
 
