@@ -141,6 +141,12 @@ return(comp);
 
 nodep init_tree() {
   nodep root = (nodep)malloc(sizeof(node));
+  if(root == NULL) {
+	printf("Not enough memory!\nSee prameter nseq for help!\n");
+	destroy(root);
+        exit(-1);
+  }
+
   root->flink=NULL;
   root->hit_id=-1;
 
@@ -156,6 +162,9 @@ nodep init_tree() {
 nodep insert_node(nodep current, char c) {
     nodep newnode;
     newnode=(nodep)malloc(sizeof(node));
+     if(newnode == NULL) {
+	return NULL;	
+    }
     int i;
     for(i=0; i<4; i++) {
       newnode->links[i] = NULL;
@@ -184,6 +193,11 @@ int insert_word(nodep root, const char w[], int id) {
   while(w[i] != '\0') {
     if(currnode->links[getPos(w[i])] == NULL) {
     	currnode = insert_node(currnode, w[i]);
+        if(currnode == NULL) {
+		printf("Not enough memory!\nSee prameter nseq for help!\n");
+		destroy(root);
+		exit(-1);
+    	}
     }
     else {
       currnode = currnode->links[getPos(w[i])];
@@ -217,6 +231,11 @@ void breadth_first_search(nodep root) {
   int counter = 0;
   int i;
   nodep *queue = (nodep *)malloc(sizeof(nodep)*num_nodes);
+   if(queue == NULL) {
+	printf("Not enough memory!\nSee prameter nseq for help!\n");
+	destroy(root);
+        exit(-1);
+  }
   for(i=0; i<num_nodes; i++) {
 	queue[i] = NULL;
   } 
@@ -328,11 +347,37 @@ SEXP find_ac2(SEXP dict, SEXP wcount_p, SEXP text, SEXP num_text, SEXP complemen
   int index, t;
 
   int *wlens = (int*)malloc(INTEGER(wcount_p)[0] * sizeof(int));
+ if(wlens == NULL) {
+	printf("Not enough memory!\nSee prameter nseq for help!\n");
+	destroy(root);
+        exit(-1);
+  }
   int *nindex = (int*)malloc(INTEGER(wcount_p)[0] * sizeof(int));
+   if(nindex == NULL) {
+	printf("Not enough memory!\nSee prameter nseq for help!\n");
+	destroy(root);
+        exit(-1);
+  }
   int *ntext = (int*)malloc(INTEGER(wcount_p)[0] * sizeof(int));
+   if(ntext == NULL) {
+	printf("Not enough memory!\nSee prameter nseq for help!\n");
+	destroy(root);
+        exit(-1);
+  }
   int *strand = (int*)malloc(INTEGER(wcount_p)[0] * sizeof(int));
+   if(strand == NULL) {
+	printf("Not enough memory!\nSee prameter nseq for help!\n");
+	destroy(root);
+        exit(-1);
+  }
   int *nmatch = (int*)malloc(INTEGER(wcount_p)[0] * sizeof(int));
-  
+   if(nmatch == NULL) {
+	printf("Not enough memory!\nSee prameter nseq for help!\n");
+	destroy(root);
+        exit(-1);
+  }  
+
+
   int i;
   for(i=0; i<INTEGER(wcount_p)[0]; i++) {
     wlens[i] = 0;

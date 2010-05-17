@@ -6,7 +6,7 @@
 A 2d density is computed by kde2D.
 }
 \usage{
-densityscatter(x,y,pch=19,cex=0.1,ncol=30,grid=100,palette="heat", add=F,...)
+densityscatter(x,y,pch=19,cex=1,ncol=30,grid=100,palette="heat", add=F,...)
 }
 \arguments{
 \item{x}{x coordinate of data }

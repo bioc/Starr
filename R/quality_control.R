@@ -271,5 +271,6 @@ if(add) {
 else {
 	plot(x,y,col=colpal[coldiscrete],pch=pch,cex=cex,...)
 }
+abline(0,1)
 }
 

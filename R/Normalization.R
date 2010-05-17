@@ -4,7 +4,7 @@
 normalize.Probes <- function (eSet, method = NULL, ratio = FALSE, ip, control, description, 
     fkt = median, featureData = FALSE, targets = NULL, arrays = NULL, ...) 
 {
-    if(is.null(arrays)) {
+    if(! is.null(arrays)) {
     	arrays <- which(colnames(exprs(eSet)) %in% arrays)
     }
     else {

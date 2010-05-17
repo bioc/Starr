@@ -6,7 +6,7 @@
 Normalization of probe intensities with a given method.
 }
 \usage{
-normalize.Probes(eSet, method=NULL, ratio=FALSE, ip, control, description, fkt=median, featureData=FALSE, targets=NULL, ...)
+normalize.Probes(eSet, method=NULL, ratio=FALSE, ip, control, description, fkt=median, featureData=FALSE, targets=NULL, arrays = NULL, ...)
 }
 \arguments{
 \item{eSet}{An ExpressionSet, containing the logged raw intensities}
@@ -20,6 +20,7 @@ normalize.Probes(eSet, method=NULL, ratio=FALSE, ip, control, description, fkt=m
 \item{fkt}{function to chose for averaging over replicates}
 \item{featureData}{should the featureData of eSet be passed to the new ExpressionSet?}
 \item{targets}{vector, factor or matrix of length twice the number of arrays, used to indicate target groups if method="Tquantile"}
+\item{arrays}{Subset of experiments (colnames in ExpressionSet) in the ExpressionSet, that are supposed to be normalized seperately.}
 \item{...}{arguments, that should be passed to the normalization methods.}
 }
 \details{
