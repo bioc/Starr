@@ -1,9 +1,15 @@
 getProfiles <- function(eSet, probeAnno, gffAnno, upstream, downstream, feature="ORF", borderNames, method, sameLength=T, fill=T, distance=8, spacing=4) {
 	
-	
+	stopifnot(all(c("chr", "start", "end", "strand") %in% names(gffAnno)))
+	gffAnno$chr <- as.vector(gffAnno$chr)
+	gffAnno$name <- as.vector(gffAnno$name)	
+
 	chr <- unique(unlist(lapply(ls(probeAnno), strsplit, split="(\\.start|\\.unique|\\.end|\\.index)", perl=T)))
 	chr <- intersect(chr, gffAnno$chr)
-	
+
+	if(length(chr) == 0) stop("No chromosomes in gff annotation mapped in probeAnno object.")
+		
+
 	profile <- list()
 	profile[["ID"]] <- colnames(exprs(eSet))
 	profile[["upstream"]] <- upstream

@@ -6,7 +6,7 @@
 A matrix of pairwise scatterplots of the ratios is created. The lower panel shows the correlation of the data.
 }
 \usage{
-plotRatioScatter(eSet, ip, control, density=F, sample=NULL, cluster=T)
+plotRatioScatter(eSet, ip, control, density=F, sample=NULL, cluster=T, cex=1)
 }
 \arguments{
 \item{ eSet }{ 	an ExprssionSet or matrix, containing the data }
@@ -15,6 +15,7 @@ plotRatioScatter(eSet, ip, control, density=F, sample=NULL, cluster=T)
 \item{ density }{ if TRUE, a density scatter plot is plotted. This plot shows the density of the data. }
 \item{ sample }{ An integer, indicating the number of subsamples to take for the density scatterplot. This is only recommended if the data is very large, as the density computation takes some time. }#
 \item{cluster}{if cluster=T, the experiments are clustered and similiar experiments are plotted together.}
+\item{cex}{see ?par}
 }
 \author{ Benedikt Zacher \email{zacher@lmb.uni-muenchen.de}}
 \seealso{\code{\link[graphics]{pairs}}, \code{\link{densityscatter}}}

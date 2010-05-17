@@ -155,6 +155,7 @@ plotPosBias <- function (intensity, sequence, main = "", ylim = NULL)
 
 
 
+
 plotScatter <- function(eSet, density=F, cluster=T, sample=NULL, cex=1) {
 	if(inherits(eSet, "ExpressionSet")) {
 		eSet <- exprs(eSet)
@@ -270,5 +271,6 @@ if(add) {
 else {
 	plot(x,y,col=colpal[coldiscrete],pch=pch,cex=cex,...)
 }
+abline(0,1)
 }
 

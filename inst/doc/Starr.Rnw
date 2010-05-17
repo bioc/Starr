@@ -150,12 +150,12 @@ To compare the different experiments, the \Rmethod{plotScatter()} function can b
 The density of the data points can be visualized with a color gradient (see figure \ref{figure3}).\\
 
 <<Scatterplot matrix, eval=FALSE, echo=TRUE>>=
-plotScatter(rpb3Chr1, density=T)
+plotScatter(rpb3Chr1, density=T, cex=0.5)
 @ 
 
 <<Scatterplot matrix,eval=TRUE,results=hide,echo=FALSE>>=
 png("densscatter.png", height=400, width=360)
-plotScatter(rpb3Chr1, density=T)
+plotScatter(rpb3Chr1, density=T, cex=0.5)
 dev.off()
 @
 
