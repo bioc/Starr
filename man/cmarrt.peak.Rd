@@ -5,13 +5,14 @@
   Obtain bound regions under a given error rate control using correction method from \code{\link{p.adjust}}. 
 }
 \usage{
-cmarrt.peak(cmarrt.ma, alpha, method, minrun)
+cmarrt.peak(cmarrt.ma, alpha, method, minrun, asCherList=FALSE)
 }
 \arguments{
   \item{cmarrt.ma}{output object from \code{\link{cmarrt.ma}}.}
   \item{alpha}{error rate control for declaring bound region.}
   \item{method}{correction method inherited from \code{\link{p.adjust}}.}
   \item{minrun}{minimum number of probes to be called a bound region.}
+  \item{asCherList}{If TRUE, result is returned as class cherList. See Ringo, for further description.}
 }
 \details{
   The function returns two objects, \code{cmarrt.bound} and \code{indep.bound}. Each object is a list of bound regions which can be accessed by \code{$chr} (chromosome), \code{$peak.start} (start coordinate of each bound region), \code{$peak.stop} (stop coordinate of each bound region),
