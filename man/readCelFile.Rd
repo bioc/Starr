@@ -7,7 +7,7 @@ Function to read the raw intensities of the perfect match probes (PM) of Affymet
 This function is used to read one-color data. For two-color data use the functions from the Ringo package.
 }
 \usage{
-readCelFile(bpmap, cel_files, names, type, experimentData=NULL, featureData=T, log.it=T)
+readCelFile(bpmap, cel_files, names, type, experimentData=NULL, featureData=T, log.it=T, phenodata=NULL)
 }
 \arguments{
 \item{ bpmap}{ 	Either a list, created by the function readBpmap() from the affy package, or the path to the bpmap file. }
@@ -17,6 +17,7 @@ readCelFile(bpmap, cel_files, names, type, experimentData=NULL, featureData=T, l
 \item{ experimentData }{	This must be an object of type MIAME, which details information about e.g., the investigator or lab where the experiment was done, an overall title, and other notes }
 \item{ featureData }{ 	If TRUE, a featureData object is added to the ExpressionSet, containing information about the chromosome, position in the genome and sequence of the features }
 \item{ log.it }{ 	If TRUE, logged intesities are read}
+\item{phenodata}{data.frame, containing columns name, type, CEL.}
 }
 \value{
 Returns raw intensity values in form of an ExpressionSet with additional information:

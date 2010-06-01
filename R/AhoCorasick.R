@@ -18,10 +18,11 @@ remap <- function(bpmap=NULL, seqs=NULL, nseq=NULL, path="", complementary=FALSE
 	else{sequences <- seqs}
 	if(is.null(nseq)) {
 	  nseq=length(sequences)
-	}
+	}      
+
 	#sequences <- c("ATG", "ATC", "CAT", "TG")
 	
-	myFASTA <- dir(path)[grep(".fa", dir(path))]
+	myFASTA <- dir(path)[grep("(.fa|.fsa|.fasta)", dir(path))]
 	matches <- match_ac(sequences, file.path(path, myFASTA), complementary, reverse, reverse_complementary, nseq)
 
 	
