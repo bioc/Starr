@@ -340,12 +340,8 @@ SEXP find_ac2(SEXP dict, SEXP wcount_p, SEXP text, SEXP num_text, SEXP complemen
   SEXP text_names;
   PROTECT(text_names = NEW_CHARACTER(INTEGER(num_text)[0]));
 
-  nodep root = init_tree();
-  if(root == NULL) {
-    printf("Not enough memory!\nSee prameter nseq for help!\n");
-    destroy(root);
-    exit(-1);
-  }
+  nodep root;
+  
   int comp = INTEGER(complementary)[0];
   int revcomp = INTEGER(reverse_complementary)[0];
   int rev = INTEGER(reverse)[0];
@@ -354,7 +350,7 @@ SEXP find_ac2(SEXP dict, SEXP wcount_p, SEXP text, SEXP num_text, SEXP complemen
   int *wlens = (int*)malloc(INTEGER(wcount_p)[0] * sizeof(int));
  if(wlens == NULL) {
 	printf("Not enough memory!\nSee prameter nseq for help!\n");
-	destroy(root);
+	//destroy(root);
         exit(-1);
   }
   int *nindex = (int*)malloc(INTEGER(wcount_p)[0] * sizeof(int));
@@ -366,19 +362,19 @@ SEXP find_ac2(SEXP dict, SEXP wcount_p, SEXP text, SEXP num_text, SEXP complemen
   int *ntext = (int*)malloc(INTEGER(wcount_p)[0] * sizeof(int));
    if(ntext == NULL) {
 	printf("Not enough memory!\nSee prameter nseq for help!\n");
-	destroy(root);
+	//destroy(root);
         exit(-1);
   }
   int *strand = (int*)malloc(INTEGER(wcount_p)[0] * sizeof(int));
    if(strand == NULL) {
 	printf("Not enough memory!\nSee prameter nseq for help!\n");
-	destroy(root);
+	//destroy(root);
         exit(-1);
   }
   int *nmatch = (int*)malloc(INTEGER(wcount_p)[0] * sizeof(int));
    if(nmatch == NULL) {
 	printf("Not enough memory!\nSee prameter nseq for help!\n");
-	destroy(root);
+	//destroy(root);
         exit(-1);
   }  
 
