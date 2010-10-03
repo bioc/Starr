@@ -340,7 +340,12 @@ SEXP find_ac2(SEXP dict, SEXP wcount_p, SEXP text, SEXP num_text, SEXP complemen
   SEXP text_names;
   PROTECT(text_names = NEW_CHARACTER(INTEGER(num_text)[0]));
 
-  nodep root;
+  nodep root = init_tree();
+  if(root == NULL) {
+    printf("Not enough memory!\nSee prameter nseq for help!\n");
+    destroy(root);
+    exit(-1);
+  }
   int comp = INTEGER(complementary)[0];
   int revcomp = INTEGER(reverse_complementary)[0];
   int rev = INTEGER(reverse)[0];
