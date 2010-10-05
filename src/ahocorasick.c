@@ -356,7 +356,7 @@ SEXP find_ac2(SEXP dict, SEXP wcount_p, SEXP text, SEXP num_text, SEXP complemen
   int *nindex = (int*)malloc(INTEGER(wcount_p)[0] * sizeof(int));
    if(nindex == NULL) {
 	printf("Not enough memory!\nSee prameter nseq for help!\n");
-	destroy(root);
+	//destroy(root);
         exit(-1);
   }
   int *ntext = (int*)malloc(INTEGER(wcount_p)[0] * sizeof(int));
