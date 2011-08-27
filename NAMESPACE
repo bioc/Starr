@@ -23,7 +23,7 @@ export("bpmapToProbeAnno", "profileplot", "correlate", "correlationPlot",
 		"rm.small.peak", "sortbygenomic", "remap", "match_ac", "heatmapplot", "writeWIG")
 
 
-
+import(zlibbioc)
 import(Ringo)
 import("pspline")
 import("MASS")
