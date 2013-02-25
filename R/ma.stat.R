@@ -33,14 +33,14 @@ sub.mid.all = .5 * (start+stop)
 
 ret <- .Call(
 "r__entry_pt_fgd2", 
-as.real(ma),
+as.double(ma),
 as.integer(w),
 as.integer(uniq.reg),
 as.integer(length(uniq.reg)),
-as.real(sub.mid.all), 
+as.double(sub.mid.all), 
 as.integer(start),
 as.integer(stop),
-as.real(logR),
+as.double(logR),
 as.integer(frag.length), PACKAGE="Starr");
 
 ma = unlist(ret[1])
