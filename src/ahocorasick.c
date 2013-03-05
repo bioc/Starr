@@ -142,9 +142,9 @@ return(comp);
 nodep init_tree() {
   nodep root = (nodep)malloc(sizeof(node));
   if(root == NULL) {
-	printf("Not enough memory!\nSee prameter nseq for help!\n");
+	Rprintf("Not enough memory!\nSee prameter nseq for help!\n");
 	destroy(root);
-        exit(-1);
+        //exit(-1);
   }
 
   root->flink=NULL;
@@ -194,16 +194,16 @@ int insert_word(nodep root, const char w[], int id) {
     if(currnode->links[getPos(w[i])] == NULL) {
     	currnode = insert_node(currnode, w[i]);
         if(currnode == NULL) {
-		printf("Not enough memory!\nSee prameter nseq for help!\n");
+		Rprintf("Not enough memory!\nSee prameter nseq for help!\n");
 		destroy(root);
-		exit(-1);
+		//exit(-1);
     	}
     }
     else {
       currnode = currnode->links[getPos(w[i])];
     }
     if(DEBUG) {
-      printf("Inserting: %c\n", w[i]);
+      Rprintf("Inserting: %c\n", w[i]);
     }
     i++;
   }
@@ -216,7 +216,7 @@ int insert_word(nodep root, const char w[], int id) {
   }
 
   if(DEBUG) {
-    printf("pdict_id->%d\n", id);
+    Rprintf("pdict_id->%d\n", id);
   }
 
   return i;
@@ -232,9 +232,9 @@ void breadth_first_search(nodep root) {
   int i;
   nodep *queue = (nodep *)malloc(sizeof(nodep)*num_nodes);
    if(queue == NULL) {
-	printf("Not enough memory!\nSee prameter nseq for help!\n");
+	Rprintf("Not enough memory!\nSee prameter nseq for help!\n");
 	destroy(root);
-        exit(-1);
+        //exit(-1);
   }
   for(i=0; i<num_nodes; i++) {
 	queue[i] = NULL;
@@ -252,7 +252,7 @@ void breadth_first_search(nodep root) {
 	fnode->flink = root;
 	
 	if(DEBUG) {
-	  printf("flink: %c -> %c\n",get_char(i), '-');
+	  Rprintf("flink: %c -> %c\n",get_char(i), '-');
 	}
       }
     }
@@ -281,30 +281,30 @@ void breadth_first_search(nodep root) {
 	    
 	    fnode->flink = a;
 	    if(DEBUG) {
-	      printf("flink: %c -> %c\n",get_char(i), get_char(pos));
+	      Rprintf("flink: %c -> %c\n",get_char(i), get_char(pos));
 	    }
 	    stop=1;
 	  }
 	  else if(a->flink == NULL) {
 	    fnode->flink = a;
 	    if(DEBUG) {
-	      printf("flink: %c -> %c\n",get_char(i), '-');
+	      Rprintf("flink: %c -> %c\n",get_char(i), '-');
 	    }
 	    stop = 1;
 	  }
 	  else {
 	    if(DEBUG) {
 	     /* if(a->flink == NULL) {
-		printf("follow flink from - " );
+		Rprintf("follow flink from - " );
 	      }
 	      else {
-		printf("follow flink from %c ", get_char(i));
+		Rprintf("follow flink from %c ", get_char(i));
 	      }*/
 	    }
 	    a = a->flink;
 	    first_flink = 0;
 	    if(DEBUG) {
-	     // printf("to %c\n", a->info);
+	     // Rprintf("to %c\n", a->info);
 	    }
 	  }
 	  if((a->hit_id >= 0) & (a->flink != NULL) & (first_flink == 1)) {
@@ -313,12 +313,12 @@ void breadth_first_search(nodep root) {
 	  fnode->hit_id = ahits;
 	  /*if(DEBUG) {
 	    hitsp fhits = fnode->dict_ids;
-	    printf("Creating hit entries:");
+	    Rprintf("Creating hit entries:");
 	    while(fhits->next != NULL) {
-	    printf(" %d", fhits->pdict_id);
+	    Rprintf(" %d", fhits->pdict_id);
 	    fhits=fhits->next;
 	  }
-	  printf(" %d\n", fhits->pdict_id);
+	  Rprintf(" %d\n", fhits->pdict_id);
 	  }*/
 	}
          }
@@ -349,33 +349,33 @@ SEXP find_ac2(SEXP dict, SEXP wcount_p, SEXP text, SEXP num_text, SEXP complemen
 
   int *wlens = (int*)malloc(INTEGER(wcount_p)[0] * sizeof(int));
  if(wlens == NULL) {
-	printf("Not enough memory!\nSee prameter nseq for help!\n");
+	Rprintf("Not enough memory!\nSee prameter nseq for help!\n");
 	//destroy(root);
-        exit(-1);
+       // exit(-1);
   }
   int *nindex = (int*)malloc(INTEGER(wcount_p)[0] * sizeof(int));
    if(nindex == NULL) {
-	printf("Not enough memory!\nSee prameter nseq for help!\n");
+	Rprintf("Not enough memory!\nSee prameter nseq for help!\n");
 	//destroy(root);
-        exit(-1);
+       // exit(-1);
   }
   int *ntext = (int*)malloc(INTEGER(wcount_p)[0] * sizeof(int));
    if(ntext == NULL) {
-	printf("Not enough memory!\nSee prameter nseq for help!\n");
+	Rprintf("Not enough memory!\nSee prameter nseq for help!\n");
 	//destroy(root);
-        exit(-1);
+       // exit(-1);
   }
   int *strand = (int*)malloc(INTEGER(wcount_p)[0] * sizeof(int));
    if(strand == NULL) {
-	printf("Not enough memory!\nSee prameter nseq for help!\n");
+	Rprintf("Not enough memory!\nSee prameter nseq for help!\n");
 	//destroy(root);
-        exit(-1);
+       // exit(-1);
   }
   int *nmatch = (int*)malloc(INTEGER(wcount_p)[0] * sizeof(int));
    if(nmatch == NULL) {
-	printf("Not enough memory!\nSee prameter nseq for help!\n");
+	Rprintf("Not enough memory!\nSee prameter nseq for help!\n");
 	//destroy(root);
-        exit(-1);
+       // exit(-1);
   }  
 
 
@@ -433,7 +433,7 @@ SEXP find_ac2(SEXP dict, SEXP wcount_p, SEXP text, SEXP num_text, SEXP complemen
 	  currnode = lastComp;
 	}
 	if(DEBUG) {
-	  // printf("char=%c\n", get_complement(seq->seq.s[index]));
+	  // Rprintf("char=%c\n", get_complement(seq->seq.s[index]));
 	}
 	int stop = 0;
 	while((currnode->links[pos] == NULL) & (stop != 1)) {
@@ -448,7 +448,7 @@ SEXP find_ac2(SEXP dict, SEXP wcount_p, SEXP text, SEXP num_text, SEXP complemen
 	  currnode = currnode->links[pos];
 	  if((currnode->hit_id >= 0) | (currnode->hit_id == -2)) {
 	    if(DEBUG) {
-	      // printf("id=");
+	      // Rprintf("id=");
 	    }
 	    nodep currhit = currnode;
 	    while((currhit->hit_id >= 0) | (currhit->hit_id == -2)) {
@@ -494,7 +494,7 @@ SEXP find_ac2(SEXP dict, SEXP wcount_p, SEXP text, SEXP num_text, SEXP complemen
 	  currnode = lastComp;
 	}
 	if(DEBUG) {
-	  // printf("char=%c\n", seq->seq.s[index]);
+	  // Rprintf("char=%c\n", seq->seq.s[index]);
 	}
 	int stop = 0;
 	while((currnode->links[pos] == NULL) & (stop != 1)) {
@@ -509,7 +509,7 @@ SEXP find_ac2(SEXP dict, SEXP wcount_p, SEXP text, SEXP num_text, SEXP complemen
 	  currnode = currnode->links[pos];
 	  if((currnode->hit_id >= 0) | (currnode->hit_id == -2)) {
 	    if(DEBUG) {
-	      // printf("id=");
+	      // Rprintf("id=");
 	    }
 	    nodep currhit = currnode;
 	    while((currhit->hit_id >= 0) | (currhit->hit_id == -2)) {
