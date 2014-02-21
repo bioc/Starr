@@ -22,7 +22,7 @@ readCelFile <- function (bpmap, cel_files, names, type, experimentData = NULL,
     cat("Reading cel file(s)\n")
     cel_header <- readCelHeader(cel_files[1])
     cel_indices <- lapply(bpmap, function(x) xy2indices(x[["pmx"]], 
-        x[["pmy"]], nr = cel_header[["cols"]]))
+        x[["pmy"]], nc = cel_header[["cols"]]))
     names(bpmap) <- names(cel_indices)
     data <- readCelIntensities(cel_files, unlist(cel_indices))
     colnames(data) <- names
