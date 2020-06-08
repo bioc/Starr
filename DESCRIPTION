@@ -1,5 +1,5 @@
 Package: Starr
-Version: 1.45.0
+Version: 1.45.1
 Date: 2009-10-12
 Title: Simple tiling array analysis of Affymetrix ChIP-chip data
 Author: Benedikt Zacher, Johannes Soeding, Pei Fen Kuan, Matthias Siebert, Achim Tresch
@@ -10,4 +10,5 @@ Description: Starr facilitates the analysis of ChIP-chip data, in particular tha
 License: Artistic-2.0
 biocViews: Microarray,OneChannel,DataImport,QualityControl,Preprocessing,ChIPchip
 LazyLoad: yes
+PackageStatus: Deprecated
 
